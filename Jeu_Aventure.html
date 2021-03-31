@@ -1,0 +1,745 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title> Planet Phaser le jeu ! </title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var config = {
+    type: Phaser.AUTO,
+    width: 5760,
+    height: 3283,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 100 },
+            debug: false
+        }
+    },
+    input:{gamepad:true},
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+   // VARIABLES -------------------------------------------------- 
+    
+var paddle;
+var paddleConnected=false;
+var player;
+var bombs;
+var alien;
+var platforms;
+var cursors;
+var gameOver = false;
+var victoire = false;
+var doubleSaut = false;
+var frame = true;
+var heal;
+var reacteur;
+var avant_vaisseau;
+var milieu_vaisseau;
+var queue_vaisseau;
+var panneau;
+var panneau2;
+var panneau_explication;
+var panneau_explication2;
+var explication = false;
+var explication2 = false;
+var enlever_panneau;
+var enlever_panneau2;
+var groupeBullets;
+var boutonFeu;
+var boutonFeuManette;
+var pistolet = false;
+var pistolet_laser;
+var vaisseau_complet = false;
+var vaisseau;
+var piece1 = false;
+var piece2 = false;
+var piece3 = false;
+var piece4 = false;
+var vie = 3;
+var invulnerabilite = false;
+var game = new Phaser.Game(config);
+
+    // FONCTION DE CHARGEMENT D'ASSETS --------------------------------------------------
+    
+function preload ()
+{
+    this.load.image('sky', 'assets/fondespace_test.png');
+    this.load.image('ground', 'assets/bon_sol.png');
+    this.load.image('bomb', 'assets/meteore.png');
+    this.load.image('alien', 'assets/alien.png');
+    this.load.image('laser', 'assets/laser.png');
+    this.load.image('bouffe', 'assets/bouffe.png');
+    this.load.image('game_over', 'assets/game_over.png');
+    this.load.image('victoire', 'assets/victoire.png');
+    this.load.image('grande_plateforme', 'assets/grande_plateforme.png');
+    this.load.image('moyenne_plateforme', 'assets/moyenne_plateforme.png');
+    this.load.image('plateforme_normale', 'assets/plateforme_normale.png');
+    this.load.image('toute_petite_plateforme', 'assets/toute_petite_plateforme.png');
+    this.load.image('petite_plateforme', 'assets/petite_plateforme.png');
+    this.load.image('reacteur', 'assets/reacteur.png');
+    this.load.image('petit_reacteur', 'assets/petit_reacteur.png');
+    this.load.image('avant_vaisseau', 'assets/avant_vaisseau.png');
+    this.load.image('milieu_vaisseau', 'assets/milieu_vaisseau.png');
+    this.load.image('queue_vaisseau', 'assets/queue_vaisseau.png');
+    this.load.image('petite_queue_vaisseau', 'assets/petite_queue_vaisseau.png');
+    this.load.image('bord_map', 'assets/bord_map.png');
+    this.load.image('pistolet_laser', 'assets/pistolet_laser.png');
+    this.load.image('barre_de_vie_3hp', 'assets/barre_de_vie_3hp.png');
+    this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
+    this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
+    this.load.image('panneau', 'assets/panneau.png');
+    this.load.spritesheet('dude', 'assets/spritesheet_perso_test.png', { frameWidth: 101, frameHeight: 81});
+    this.load.spritesheet('vaisseau_complet', 'assets/vaisseau_complet.png', {frameWidth: 350, frameHeight: 588});
+    this.load.spritesheet('panneau_explication', 'assets/panneau_explication.png', {frameWidth: 1920, frameHeight: 1080});
+    this.load.spritesheet('panneau_explication2', 'assets/panneau_explication2.png', {frameWidth: 1920, frameHeight: 1080});
+    this.iter = 3.14;
+}
+
+    // FONCTION DE CREATION D'OBJETS --------------------------------------------------
+    
+function create ()
+{
+    // AJOUT DU FOND --------------------------------------------------
+    
+    this.add.image(2880, 1641, 'sky');
+    
+    // CREATION PLATEFORMES --------------------------------------------------
+    
+    platforms = this.physics.add.staticGroup();
+
+    platforms.create(2880, 3122, 'ground').setScale(1).refreshBody();
+    platforms.create(1100, 1500, 'grande_plateforme');
+    platforms.create(5000, 1800, 'moyenne_plateforme');
+    platforms.create(3800, 700, 'plateforme_normale');
+    platforms.create(320, 200, 'toute_petite_plateforme');
+    platforms.create(1200, 2500, 'petite_plateforme');
+    platforms.create(0, 1641, 'bord_map');
+    platforms.create(5760, 1641, 'bord_map');
+    
+
+    // CREATION JOUEUR ET SES ANIMATIONS --------------------------------------------------
+    
+    player = this.physics.add.sprite(3000, 3030, 'dude');
+    player.direction = 'right';
+    player.setBounce(0);
+    player.setCollideWorldBounds(true);
+    
+    this.anims.create({
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 2 }),
+        frameRate: 10,
+    });
+
+    this.anims.create({
+        key: 'turn',
+        frames: [ { key: 'dude', frame: 4 } ],
+        frameRate: 20
+    });
+
+    this.anims.create({
+        key: 'right',
+        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frameRate: 10,
+    });
+    
+    this.anims.create({
+        key: 'reste_right',
+        frames: [ {key: 'dude', frame: 4}],
+    });
+    
+    this.anims.create({
+        key: 'reste_left',
+        frames: [{key: 'dude', frame: 3}],
+    });
+    
+    // AJOUTS VARIABLE SELON TOUCHE --------------------------------------------------
+    
+    cursors = this.input.keyboard.createCursorKeys();
+    boutonFeu = this.input.keyboard.addKey('space');
+    enlever_panneau = this.input.keyboard.addKey('esc');
+    enlever_panneau2 = this.input.keyboard.addKey('shift');
+    
+    // CREATION GROUPES SELON TYPE D'ASSETS --------------------------------------------------
+    
+    groupeBullets = this.physics.add.group();
+
+    bombs = this.physics.add.group();
+    
+    // ALIEN --------------------------------------------------
+    
+    alien = this.physics.add.group({
+        key : 'alien',
+        repeat: 0,
+        setXY: { x: 540, y: 1240, stepX: 500 }
+    });
+    
+    var alien1 = alien.create(1400, 1240, 'alien');
+    var alien2 = alien.create(2000, 1240, 'alien');
+    var alien3 = alien.create(1200, 3000, 'alien');
+    var alien4 = alien.create(5000, 3000, 'alien');
+    var alien5 = alien.create(350, 50, 'alien');
+    var alien7 = alien.create(5000, 1000, 'alien');
+    var alien8 = alien.create(4200, 200, 'alien');
+    
+    // SOIN --------------------------------------------------
+    
+    heal = this.physics.add.group({
+        key : 'bouffe',
+        repeat : 0,
+        setXY: {x: 1000, y: 780}
+    });
+    
+    hp = this.add.image(1800,100, "barre_de_vie_3hp").setScrollFactor(0);
+    
+    // ARME PLAYER --------------------------------------------------
+    
+    pistolet_laser = this.physics.add.group({
+        key : 'pistolet_laser',
+        repeat : 0,
+        setXY: {x:1300, y: 2325}
+    });
+    
+    // PIECES VAISSEAU --------------------------------------------------
+    
+    reacteur = this.physics.add.group({
+        key : 'reacteur',
+        repeat : 0,
+        setXY: {x: 300, y: 2850}
+    });
+    
+    avant_vaisseau = this.physics.add.group({
+        key : 'avant_vaisseau',
+        repeat : 0,
+        setXY: {x: 100, y: 50}
+    });
+    
+    milieu_vaisseau = this.physics.add.group({
+        key : 'milieu_vaisseau',
+        repeat : 0,
+        setXY: {x: 3700, y: 200}
+    });
+    
+    queue_vaisseau = this.physics.add.group({
+        key : 'queue_vaisseau',
+        repeat : 0,
+        setXY: {x: 5600, y: 2900}
+    });
+    
+    vaisseau = this.physics.add.sprite( 2500 ,2700, 'vaisseau_complet');
+    
+    // PANNEAUX --------------------------------------------------
+    
+    panneau = this.physics.add.group({
+        key : 'panneau',
+        repeat : 0,
+        setXY: {x: 3100, y: 3040}
+    });
+    
+    panneau2 = this.physics.add.group({
+        key : 'panneau',
+        repeat : 0,
+        setXY: {x: 1500, y: 2325,}
+    });
+    
+    panneau_explication = this.physics.add.sprite(960, 540, 'panneau_explication').setScrollFactor(0,0);
+    panneau_explication.body.setAllowGravity(false);
+    
+    panneau_explication2 = this.physics.add.sprite(960, 540, 'panneau_explication2').setScrollFactor(0,0);
+    panneau_explication2.body.setAllowGravity(false);
+    
+
+    //  COLLIDERS ET OVERLAPS --------------------------------------------------
+    
+    this.physics.add.collider(player, platforms);
+    this.physics.add.collider(bombs, platforms);
+    this.physics.add.collider(alien, platforms);
+    this.physics.add.collider(heal, platforms);
+    this.physics.add.collider(reacteur, platforms);
+    this.physics.add.collider(avant_vaisseau, platforms);
+    this.physics.add.collider(milieu_vaisseau, platforms);
+    this.physics.add.collider(queue_vaisseau, platforms);
+    this.physics.add.collider(panneau, platforms);
+    this.physics.add.collider(pistolet_laser, platforms);
+    this.physics.add.collider(panneau2, platforms);
+    this.physics.add.collider(groupeBullets, bombs, hitAsteroide, null, this);
+    this.physics.add.collider(vaisseau, platforms);
+    this.physics.add.collider(player, bombs, hitBomb, null, this);
+    
+    this.physics.add.overlap(groupeBullets, platforms, hitWall, null, this);
+    this.physics.add.overlap(player, heal, collectHeal, null, this);
+    this.physics.add.overlap(player, alien, hitAlien, null, this);
+    this.physics.add.overlap(player, reacteur, collectReacteur, null, this);
+    this.physics.add.overlap(player, avant_vaisseau, collectAvantVaisseau, null, this);
+    this.physics.add.overlap(player, milieu_vaisseau, collectMilieuVaisseau, null, this);
+    this.physics.add.overlap(player, queue_vaisseau, collectQueueVaisseau, null, this);
+    this.physics.add.overlap(groupeBullets, alien, hit, null,this);
+    this.physics.add.overlap(player, panneau, affichePanneau, null, this);
+    this.physics.add.overlap(player, panneau2, affichePanneau2, null, this);
+    this.physics.add.overlap(player, pistolet_laser, getPistolet, null, this);
+    this.physics.add.overlap(player, vaisseau, victoireJoueur, null, this);
+    
+    // CAMERA --------------------------------------------------
+    
+    this.cameras.main.setBounds(0, 0, 5760, 3283)
+    this.cameras.main.setSize(1920, 1080);
+    this.cameras.main.startFollow(player);
+
+        
+
+    
+    //ALIENS QUI BOUGENT --------------------------------------------------
+    
+    var tween = this.tweens.add({
+        targets: alien1,
+        x: 50,
+        duration: 5000,
+        yoyo: true,
+        repeat: -1,
+        onStart: function () { console.log('onStart'); console.log(arguments); },
+        onComplete: function () { console.log('onComplete'); console.log(arguments); },
+        onYoyo: function () { console.log('onYoyo'); console.log(arguments); },
+        onRepeat: function () { console.log('onRepeat'); console.log(arguments); },
+    });
+    
+    var tween1 = this.tweens.add({
+        targets: alien2,
+        x: 50,
+        duration: 5000,
+        yoyo: true,
+        repeat: -1,
+        onStart: function () { console.log('onStart'); console.log(arguments); },
+        onComplete: function () { console.log('onComplete'); console.log(arguments); },
+        onYoyo: function () { console.log('onYoyo'); console.log(arguments); },
+        onRepeat: function () { console.log('onRepeat'); console.log(arguments); },
+    });
+    
+    var tween2 = this.tweens.add({
+        targets: alien3,
+        x: 50,
+        duration: 5000,
+        yoyo: true,
+        repeat: -1,
+        onStart: function () { console.log('onStart'); console.log(arguments); },
+        onComplete: function () { console.log('onComplete'); console.log(arguments); },
+        onYoyo: function () { console.log('onYoyo'); console.log(arguments); },
+        onRepeat: function () { console.log('onRepeat'); console.log(arguments); },
+    });
+    
+    // ANIMATIONS PANNEAUX --------------------------------------------------
+    
+    this.anims.create({
+        key: 'panneau_apparait',
+        frames: [{ key: 'panneau_explication', frame: 1.}],
+    });
+    
+    this.anims.create({
+        key: 'panneau_disparait',
+        frames: [{ key: 'panneau_explication', frame: 2.}],
+    });
+    
+    this.anims.create({
+        key: 'panneau2_apparait',
+        frames: [{ key: 'panneau_explication2', frame: 1.}],
+    });
+    
+    this.anims.create({
+        key: 'panneau2_disparait',
+        frames: [{ key: 'panneau_explication2', frame: 2.}],
+    });
+    
+    // ANIMATION VAISSEAU --------------------------------------------------
+    
+    this.anims.create({
+        key: 'vaisseau_apparait',
+        frames: [{ key: 'vaisseau_complet', frame: 1.}],
+    })
+}
+
+    // FONCTION UPDATE --------------------------------------------------
+    
+function update ()
+{
+    if (gameOver)
+    {
+        return;
+    }
+    
+    // AJOUT CONTROLES CLAVIER --------------------------------------------------
+    
+    if (player.body.touching.down){
+        var doubleSaut = false;
+    }
+
+    if (cursors.left.isDown)
+    {
+        player.direction = 'left';
+        
+        player.setVelocityX(-750);
+
+        player.anims.play('left', true);
+    }
+    else if (cursors.right.isDown)
+    {
+        player.direction = 'right';
+        
+        player.setVelocityX(750);
+
+        player.anims.play('right', true);
+    }
+    else
+    {
+        player.setVelocityX(0);
+        
+        if(player.direction == 'left'){
+            player.anims.play('reste_left', true);
+        }
+        
+        else if (player.direction == 'right'){
+            player.anims.play('reste_right', true);
+        }
+    }
+    
+    if(cursors.up.isDown)
+        {
+        if (player.body.touching.down){
+            frame = false;
+            player.setVelocityY(-750);
+            }
+    
+        else if (doubleSaut && frame){
+            doubleSaut = false;
+            player.setVelocityY(-750);
+            }
+        }
+    
+    if (cursors.up.isUp)
+    {
+        frame = true
+    }
+    
+    if (cursors.down.isDown){
+        player.setVelocityY(750)
+    }
+    
+    // CONDITION DE RENVOI SUR LES FONCTIONS SELON LA TOUCHE APPUYEE --------------------------------------------------
+    
+    if ( Phaser.Input.Keyboard.JustDown(boutonFeu)) {
+            if(pistolet == true){
+            tirer(player);
+            }
+        }
+
+    
+    if ( Phaser.Input.Keyboard.JustDown(enlever_panneau)) {
+            explication = false;
+            panneau_explication.anims.play('panneau_disparait');  
+        }
+    
+    if ( Phaser.Input.Keyboard.JustDown(enlever_panneau2)){
+            explication2 = false;
+            panneau_explication2.anims.play('panneau2_disparait');
+    }
+    
+    
+    // CONTROLE DE L'ACTUALISATION DE LA BARRE DE VIE --------------------------------------------------
+    
+    if (vie == 3){
+       hp.setTexture("barre_de_vie_3hp");
+        
+    }
+    else if (vie == 2){
+        hp.setTexture("barre_de_vie_2hp" );
+        
+    }
+    
+    else if (vie == 1){
+        hp.setTexture("barre_de_vie_1hp");
+    }
+    
+    else if (vie == 0){
+        this.add.image(960, 540, 'game_over').setScrollFactor(0);
+    }
+    
+    //
+      if(piece1 == true && piece2 == true && piece3 == true && piece4 == true && vaisseau_complet == false){
+            vaisseau_complet = true;
+            vaisseau.anims.play('vaisseau_apparait');
+    }
+    
+    // AJOUT CONTROLES MANETTE --------------------------------------------------
+    
+    this.input.gamepad.once('connected', function (pad) {
+    paddleConnected = true;
+    paddle = pad;
+    });
+
+    if (paddleConnected == true)
+    {
+        if (paddle.A && player.body.touching.down)
+        {
+        player.setVelocityY(-750);
+        }
+
+        else if (paddle.R2 && player.body.touching.down)
+        {
+            player.direction = 'right';
+            player.setVelocityX(750);
+            player.anims.play('right', true);
+        }
+
+        else if (paddle.R2 && !player.body.touching.down)
+        {
+            player.direction = 'right';
+            player.setVelocityX(750);
+            player.anims.play('right', true);
+        }
+
+        else if (paddle.L2 && player.body.touching.down)
+        {   
+            player.direction = 'left';
+            player.setVelocityX(-750);
+            player.anims.play('left', true);
+        }
+
+        else if (paddle.L2 && !player.body.touching.down)
+        {
+            player.direction =  'left';
+            player.setVelocityX(-750);
+            player.anims.play('left', true);
+        }
+        
+        else if (paddle.L1 && !player.body.touching.down)
+            {
+                player.setVelocityY(750);
+            }
+        if (paddle.B){
+            if(pistolet == true){
+            tirer(player);
+            }
+        }
+        if (paddle.Y){
+            explication = false;
+            panneau_explication.anims.play('panneau_disparait');  
+            }
+    
+        if ( paddle.X){
+            explication2 = false;
+            panneau_explication2.anims.play('panneau2_disparait');
+            }
+    }
+}
+    // FONCTION QUI RECUPERE LE PISTOLET ET QUI ACTIVE LE TIR --------------------------------------------------
+
+function getPistolet(player, pistolet_laser){
+    pistolet_laser.disableBody(true, true);
+    pistolet = true;
+}
+
+    // FONCTION POUR TIRER --------------------------------------------------
+    
+function tirer(player) {
+	    var coefDir;
+        if (player.direction == 'left') { coefDir = -1; } else { coefDir = 1 }
+        // on crée la balle a coté du joueur
+        var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'laser');
+        // parametres physiques de la balle.
+        bullet.setCollideWorldBounds(false);
+        bullet.body.allowGravity =false;
+        bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
+}
+    // FONCTION DE DESTRUCTION DE L'ALIEN ET DE LA BALLE QUAND ILS SE TOUCHENT --------------------------------------------------
+    
+function hit (bullet, alien) {
+    bullet.destroy();
+    alien.destroy();    
+}
+    // FONCTION DE DESTRUCTION DE LA BALLE LORSQU'ELLE TOUCHE UNE PAROIE DE LA SURFACE DE JEU --------------------------------------------------
+    
+function hitWall(bullet, platforms){
+    bullet.destroy();
+}
+    // FONCTION DE DESTRUCTION DE LA BALLE ET DE L'ASTEROIDE QUAND ILS SE TOUCHENT --------------------------------------------------
+    
+function hitAsteroide(bullet, bombs){
+    bullet.destroy();
+    bombs.destroy();
+}
+
+    // FONCTIONS DE COLLECTE DES PIECES DE VAISSEAU --------------------------------------------------
+
+function collectReacteur(player, reacteur){
+    reacteur.disableBody(true, true);
+    
+    this.add.image(100, 100, 'petit_reacteur').setScrollFactor(0);
+    
+    piece1 = true;
+    
+    if (piece1 == true){
+
+        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+        var bomb = bombs.create(x, 16, 'bomb');
+        bomb.setBounce(1);
+        bomb.setCollideWorldBounds(true);
+        bomb.setVelocity(Phaser.Math.Between(-1000, 1000), 100);
+        bomb.allowGravity = false;
+    }
+    
+}
+    
+function collectAvantVaisseau(player, avant_vaisseau){
+    avant_vaisseau.disableBody(true, true);
+    
+    this.add.image(600, 50, 'avant_vaisseau').setScrollFactor(0);
+    
+    piece2 = true;
+    
+    if (piece2 == true){
+
+        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+        var bomb = bombs.create(x, 16, 'bomb');
+        bomb.setBounce(1);
+        bomb.setCollideWorldBounds(true);
+        bomb.setVelocity(Phaser.Math.Between(-1000, 1000), 100);
+        bomb.allowGravity = false;
+    }
+}
+ 
+function collectMilieuVaisseau(player, milieu_vaisseau){
+    milieu_vaisseau.disableBody(true, true);
+    
+    this.add.image(400, 100, 'milieu_vaisseau').setScrollFactor(0);
+    
+    piece3 = true;
+    
+    if (piece3 == true){
+
+        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+        var bomb = bombs.create(x, 16, 'bomb');
+        bomb.setBounce(1);
+        bomb.setCollideWorldBounds(true);
+        bomb.setVelocity(Phaser.Math.Between(-1000, 1000), 100);
+        bomb.allowGravity = false;
+    }
+}
+
+function collectQueueVaisseau(player, queue_vaisseau){
+    queue_vaisseau.disableBody(true, true);
+    
+    this.add.image(200, 75, 'petite_queue_vaisseau').setScrollFactor(0);
+    
+    piece4 = true;
+    
+    if (piece4 == true){
+
+        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+        var bomb = bombs.create(x, 16, 'bomb');
+        bomb.setBounce(1);
+        bomb.setCollideWorldBounds(true);
+        bomb.setVelocity(Phaser.Math.Between(-1000, 1000), 100);
+        bomb.allowGravity = false;
+    }
+}
+    
+    // FONCTION D'AFFICHAGE DES PANNEAUX LORSQUE LE JOUEUR PASSE DESSUS --------------------------------------------------
+    
+function affichePanneau(player, panneau){
+    panneau_explication.anims.play('panneau_apparait');
+    explication = true;
+    
+}
+
+function affichePanneau2(player, panneau2){
+    panneau_explication2.anims.play('panneau2_apparait');
+    explication2 = true;
+}
+    // FONCTION DE COLLECTE DU SOIN --------------------------------------------------
+    
+function collectHeal (player, heal)
+{
+    heal.disableBody(true, true);
+
+    vie += 1;
+    
+    if(vie >= 4)
+    {
+        vie == 3;
+    }
+
+}
+
+    // FONCTION DE LA CONDITION DE VICTOIRE --------------------------------------------------
+    
+function victoireJoueur(player, vaisseau){
+    if(vaisseau_complet == true){
+        
+        victoire = true
+        this.add.image(960, 540, 'victoire').setScrollFactor(0);
+        this.physics.pause();
+        player.setTint('#00FF1B');
+        player.disableBody(true, true);
+    }   
+}
+    // FONCTION DE LA MORT DU PERSONNAGE LORSQUE QU'IL TOUCHE UN ASTEROIDE --------------------------------------------------
+    
+function hitBomb (player, bombs)
+{
+    this.add.image(960, 540, 'game_over').setScrollFactor(0);
+    
+    this.physics.pause();
+    
+    player.setTint(0xff0000);
+
+    player.anims.play('turn');
+
+    gameOver = true;
+}
+    
+    // FONCTION DE PERTE DE VIE LORSQUE LE PERSONNAGE TOUCHE UN ALIEN JUSQU'A LA MORT --------------------------------------------------
+    
+function hitAlien (player, alien)
+{
+    if (!invulnerabilite){
+         vie -= 1;
+        invulnerabilite = true;
+        
+        if(vie > 0){
+            clignotement = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){player.visible = !player.visible;}, callbackScope: this});
+        }
+        
+        tempsInvulnerabilite = this.time.addEvent({ delay : 2000, callback: function(){invulnerabilite = false}, callbackScope: this});
+    }
+   
+
+    player.anims.play('turn');
+    
+    if(vie == 0){
+        this.add.image(960, 540, 'game_over').setScrollFactor(0);
+        player.setTint(0xff0000);
+        player.anims.play('turn');
+        this.physics.pause();
+        gameOver = true;
+    }
+
+}
+</script>
+
+</body>
+</html>
