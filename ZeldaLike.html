@@ -5,7 +5,7 @@
     <title> Zelda Like! </title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
     <script type="text/javascript" src="menu.js"></script>
-    <script type="text/javascript" src="Scene2.js"></script>
+    <script type="text/javascript" src="DebutJeu.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -20,7 +20,7 @@ var config = {
     type: Phaser.AUTO,
     width: 1920,
     height: 1080,
-    scene: [Menu, Scene2],
+    scene: [Menu, DebutJeu],
     
     input:{gamepad:true},
 };
@@ -29,7 +29,9 @@ var config = {
 var paddle;
 var paddleConnected=false;
 var player;
+var cursors;
 var game = new Phaser.Game(config);
+
     
 function preload ()
 {
@@ -38,6 +40,8 @@ function preload ()
     
 function create ()
 {
+    cursors = this.input.keyboard.createCursorKeys();
+    
     this.scene.start("Menu")
     
 }
