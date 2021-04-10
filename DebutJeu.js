@@ -8,6 +8,7 @@ class DebutJeu extends Phaser.Scene{
     
         this.load.image('perso_test', 'assets_test/perso_test.png');
         this.load.image('fond_test', 'assets_test/fond_test.png');
+        this.load.image('bordure_gauche', 'assets_test/bordure_test.png');
         
     } // FIN PRELOAD
     
@@ -17,7 +18,8 @@ class DebutJeu extends Phaser.Scene{
     this.player = this.physics.add.image(960, 540, 'perso_test');
     this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
-
+    var bordure_gauche = this.physics.add.image(1,540, 'bordure_gauche');
+    this.physics.add.collider(this.player, bordure_gauche, this.hitBordureGauche, null, this);
     
     } // FIN CREATE   
      
@@ -65,5 +67,10 @@ class DebutJeu extends Phaser.Scene{
     }
         
     } // FIN UPDATE
-     
+    
+     hitBordureGauche(bordure_gauche, player){
+         
+         this.scene.start('Scene3');
+         
+     }
     } // FIN DE LA CLASSE

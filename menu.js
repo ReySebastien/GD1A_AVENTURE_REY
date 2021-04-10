@@ -9,7 +9,7 @@ class Menu extends Phaser.Scene {
     {
         this.load.image('menu', 'assets/menu.png');
         
-    }
+    } // FIN PRELOAD
     
     create(){
         
@@ -21,9 +21,10 @@ class Menu extends Phaser.Scene {
 
         }, this);
         
-    }
+    } //FIN CREATE
     
     update(){
         
-    }
-}
+    } // FIN UPDATE
+    
+} // FIN DE LA CLASSE
