@@ -15,7 +15,7 @@ class DebutJeu extends Phaser.Scene{
         
     this.add.image(960,540, 'fond_test');
     this.player = this.physics.add.image(960, 540, 'perso_test');
-        
+    this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
 
     

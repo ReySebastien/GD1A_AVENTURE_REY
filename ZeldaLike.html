@@ -46,6 +46,7 @@ function preload ()
 function create ()
 {
     cursors = this.input.keyboard.createCursorKeys();
+    player.setCollideWorldBounds(true);
     
     this.scene.start("Menu")
     
