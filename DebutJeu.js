@@ -9,6 +9,7 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('perso_test', 'assets_test/perso_test.png');
         this.load.image('fond_test', 'assets_test/fond_test.png');
         this.load.image('bordure_gauche', 'assets_test/bordure_test.png');
+        this.load.image('bordure_haut', 'assets_test/bordure_test_2.png');
         
     } // FIN PRELOAD
     
@@ -19,7 +20,11 @@ class DebutJeu extends Phaser.Scene{
     this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
     var bordure_gauche = this.physics.add.image(1,540, 'bordure_gauche');
+    var bordure_haut = this.physics.add.image(960,1, 'bordure_haut');
+    var bordure_droite = this.physics.add.image(1919, 540, 'bordure_gauche');
     this.physics.add.collider(this.player, bordure_gauche, this.hitBordureGauche, null, this);
+    this.physics.add.collider(this.player, bordure_haut, this.hitBordureHaut, null, this);
+    this.physics.add.collider(this.player, bordure_droite, this.hitBordureDroite, null, this);
     
     } // FIN CREATE   
      
@@ -68,9 +73,25 @@ class DebutJeu extends Phaser.Scene{
         
     } // FIN UPDATE
     
-     hitBordureGauche(bordure_gauche, player){
+    hitBordureGauche(bordure_gauche, player){
          
-         this.scene.start('SceneGauche');
+        this.scene.start('SceneGauche');
+        this.cursors.left.isDown = false;
+        this.cursors.right.isDown = false;
      }
+    
+    hitBordureHaut(bordure_haut, player){
+        
+        this.scene.start('SceneHaut');
+        this.cursors.up.isDown = false;
+        this.cursors.down.isDown = false;
+     }
+    
+    hitBordureDroite(bordure_droite, player){
+        
+        this.scene.start('SceneDroite');
+        this.cursors.right.isDown = false;
+        this.cursors.left.isDown = false;
+    }
     
     } // FIN DE LA CLASSE

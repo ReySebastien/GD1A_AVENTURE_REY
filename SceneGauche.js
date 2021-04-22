@@ -7,7 +7,7 @@ preload(){
     
     this.load.image('fond_test_2', 'assets_test/fond_test_2.png');
     this.load.image('perso_test', 'assets_test/perso_test.png');
-    this.load.image('bordure_droite', 'assets_test/bordure_test.png');
+    this.load.image('bordure_droite2', 'assets_test/bordure_test.png');
     
 } // FIN PRELOAD
     
@@ -17,8 +17,8 @@ create(){
     this.player = this.physics.add.image(960, 540, 'perso_test');
     this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
-    var bordure_droite = this.physics.add.image(1919,540, 'bordure_droite');
-    this.physics.add.collider(this.player, bordure_droite, this.hitBordureGauche, null, this);
+    var bordure_droite2 = this.physics.add.image(1919,540, 'bordure_droite2');
+    this.physics.add.collider(this.player, bordure_droite2, this.hitBordureDroite2, null, this);
 } // FIN CREATE
     
 update(){
@@ -66,9 +66,12 @@ update(){
         
     } // FIN UPDATE
     
-    hitBordureGauche(bordure_gauche, player){
+    hitBordureDroite2(bordure_droite2, player){
          
-         this.scene.start('DebutJeu'); 
+        this.scene.start('DebutJeu');
+        this.cursors.right.isDown = false;
+        this.cursors.left.isDown = false;
+
      }
     
 } // FIN DE LA CLASSE
