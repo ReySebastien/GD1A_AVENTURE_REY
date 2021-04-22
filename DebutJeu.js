@@ -28,6 +28,10 @@ class DebutJeu extends Phaser.Scene{
     this.physics.add.collider(this.player, bordure_droite, this.hitBordureDroite, null, this);
     this.physics.add.collider(this.player, bordure_bas, this.hitBordureBas, null, this);
     
+    this.cameras.main.setBounds(0, 0, 5760, 3283)
+    this.cameras.main.setSize(1920, 1080);
+    this.cameras.main.startFollow(this.player);
+
     } // FIN CREATE   
      
     update(){
