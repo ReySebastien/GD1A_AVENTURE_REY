@@ -70,7 +70,7 @@ class DebutJeu extends Phaser.Scene{
     
      hitBordureGauche(bordure_gauche, player){
          
-         this.scene.start('Scene3');
+         this.scene.start('SceneGauche');
      }
     
     } // FIN DE LA CLASSE

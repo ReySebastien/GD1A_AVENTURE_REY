@@ -6,7 +6,10 @@
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
     <script type="text/javascript" src="menu.js"></script>
     <script type="text/javascript" src="DebutJeu.js"></script>
-    <script type="text/javascript" src="Scene3.js"></script>
+    <script type="text/javascript" src="SceneGauche.js"></script>
+    <script type="text/javascript" src="SceneHaut.js"></script>
+    <script type="text/javascript" src="SceneDroite.js"></script>
+    <script type="text/javascript" src="SceneBas.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -26,7 +29,7 @@ var config = {
         arcade: {
             gravity: { y: 0 },
             debug: true}},
-    scene: [Menu, DebutJeu, Scene3],
+    scene: [Menu, DebutJeu, SceneGauche, SceneBas, SceneDroite, SceneHaut],
     input:{gamepad:true},
 };
 // VARIABLES
