@@ -6,7 +6,7 @@ class SceneHaut extends Phaser.Scene{
     
     this.load.image('fond_test_3', 'assets_test/fond_test_3.png');
     this.load.image('perso_test', 'assets_test/perso_test.png');
-    this.load.image('bordure_bas', 'assets_test/bordure_test_2.png');
+    this.load.image('bordure_bas2', 'assets_test/bordure_test_2.png');
     
 } // FIN PRELOAD
     
@@ -16,8 +16,8 @@ create(){
     this.player = this.physics.add.image(960, 540, 'perso_test');
     this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
-    var bordure_bas = this.physics.add.image(960,1079, 'bordure_bas');
-    this.physics.add.collider(this.player, bordure_bas, this.hitBordureBas, null, this);
+    var bordure_bas2 = this.physics.add.image(960,1079, 'bordure_bas2');
+    this.physics.add.collider(this.player, bordure_bas2, this.hitBordureBas2, null, this);
 } // FIN CREATE
     
 update(){
@@ -65,7 +65,7 @@ update(){
         
     } // FIN UPDATE
     
-    hitBordureBas(bordure_bas, player){
+    hitBordureBas2(bordure_bas2, player){
          
         this.scene.start('DebutJeu');
         this.cursors.down.isDown = false;

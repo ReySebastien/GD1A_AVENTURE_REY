@@ -22,9 +22,11 @@ class DebutJeu extends Phaser.Scene{
     var bordure_gauche = this.physics.add.image(1,540, 'bordure_gauche');
     var bordure_haut = this.physics.add.image(960,1, 'bordure_haut');
     var bordure_droite = this.physics.add.image(1919, 540, 'bordure_gauche');
+    var bordure_bas = this.physics.add.image(960, 1079, 'bordure_haut');
     this.physics.add.collider(this.player, bordure_gauche, this.hitBordureGauche, null, this);
     this.physics.add.collider(this.player, bordure_haut, this.hitBordureHaut, null, this);
     this.physics.add.collider(this.player, bordure_droite, this.hitBordureDroite, null, this);
+    this.physics.add.collider(this.player, bordure_bas, this.hitBordureBas, null, this);
     
     } // FIN CREATE   
      
@@ -93,5 +95,13 @@ class DebutJeu extends Phaser.Scene{
         this.cursors.right.isDown = false;
         this.cursors.left.isDown = false;
     }
+    
+    hitBordureBas(bordure_bas, player){
+        
+        this.scene.start('SceneBas');
+        this.cursors.up.isDown = false;
+        this.cursors.down.isDown = false;
+    }
+    
     
     } // FIN DE LA CLASSE
