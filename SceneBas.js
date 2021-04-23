@@ -8,7 +8,11 @@ class SceneBas extends Phaser.Scene{
     this.load.image('fond_test_5', 'assets_test/fond_test_5.png');
     this.load.image('perso_test', 'assets_test/perso_test.png');
     this.load.image('bordure_haut2', 'assets_test/bordure_test_2.png');
-    
+    this.load.image('barre_de_vie_3hp', 'assets/barre_de_vie_3hp.png');
+    this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
+    this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
+    this.load.image('game_over', 'assets/game_over.png');
+     
 } // FIN PRELOAD
     
 create(){
@@ -19,6 +23,7 @@ create(){
     this.cursors = this.input.keyboard.createCursorKeys();
     var bordure_haut2 = this.physics.add.image(960,1, 'bordure_haut2');
     this.physics.add.collider(this.player, bordure_haut2, this.hitBordureHaut2, null, this);
+    this.hp = this.add.image(1800,100, "barre_de_vie_3hp").setScrollFactor(0);
 } // FIN CREATE
     
 update(){
@@ -62,6 +67,23 @@ update(){
         
         this.player.setVelocityY(0);  
         
+    }
+    
+    if (vie == 3){
+       this.hp.setTexture("barre_de_vie_3hp");
+        
+    }
+    else if (vie == 2){
+        this.hp.setTexture("barre_de_vie_2hp" );
+        
+    }
+    
+    else if (vie == 1){
+        this.hp.setTexture("barre_de_vie_1hp");
+    }
+    
+    else if (vie == 0){
+        this.add.image(960, 540, 'game_over').setScrollFactor(0);
     }
         
     } // FIN UPDATE

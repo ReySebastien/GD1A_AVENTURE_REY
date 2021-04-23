@@ -10,6 +10,10 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('fond_test', 'assets_test/fond_test.png');
         this.load.image('bordure_gauche', 'assets_test/bordure_test.png');
         this.load.image('bordure_haut', 'assets_test/bordure_test_2.png');
+        this.load.image('barre_de_vie_3hp', 'assets/barre_de_vie_3hp.png');
+        this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
+        this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
+        this.load.image('game_over', 'assets/game_over.png');
         
     } // FIN PRELOAD
     
@@ -27,7 +31,8 @@ class DebutJeu extends Phaser.Scene{
     this.physics.add.collider(this.player, bordure_haut, this.hitBordureHaut, null, this);
     this.physics.add.collider(this.player, bordure_droite, this.hitBordureDroite, null, this);
     this.physics.add.collider(this.player, bordure_bas, this.hitBordureBas, null, this);
-    
+    this.hp = this.add.image(1800,100, "barre_de_vie_3hp").setScrollFactor(0);
+        
     this.cameras.main.setBounds(0, 0, 5760, 3283)
     this.cameras.main.setSize(1920, 1080);
     this.cameras.main.startFollow(this.player);
@@ -75,6 +80,23 @@ class DebutJeu extends Phaser.Scene{
         
         this.player.setVelocityY(0);  
         
+    }
+        
+    if (vie == 3){
+       this.hp.setTexture("barre_de_vie_3hp");
+        
+    }
+    else if (vie == 2){
+        this.hp.setTexture("barre_de_vie_2hp" );
+        
+    }
+    
+    else if (vie == 1){
+        this.hp.setTexture("barre_de_vie_1hp");
+    }
+    
+    else if (vie == 0){
+        this.add.image(960, 540, 'game_over').setScrollFactor(0);
     }
         
     } // FIN UPDATE
