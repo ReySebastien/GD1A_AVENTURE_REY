@@ -37,7 +37,11 @@ var config = {
 var paddle;
 var paddleConnected=false;
 var player;
+var ennemi;
 var cursors;
+var invulnerabilite = false;
+var vie = 3;
+var gameOver = false;
 var game = new Phaser.Game(config);
 
     
@@ -63,6 +67,25 @@ function update ()
 
 // AUTRES FONCTIONS
     
+ function hitEnnemi(player, ennemi){
+     
+    if (!invulnerabilite){
+        vie -= 1;
+        invulnerabilite = true;
+        
+        if(vie > 0){
+            clignotement = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){player.visible = !player.visible;}, callbackScope: this});
+        }
+        
+        tempsInvulnerabilite = this.time.addEvent({ delay : 2000, callback: function(){invulnerabilite = false}, callbackScope: this});
+    }
+     
+     if(vie == 0){
+        player.setTint(0xff0000);
+        this.physics.pause();
+        gameOver = true;
+    }
+ }
 </script>
 
 </body>
