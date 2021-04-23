@@ -80,18 +80,18 @@ update(){
     
     hitEnnemi(player, ennemi){
      
-    if (!this.invulnerabilite){
-        this.vie -= 1;
-        this.invulnerabilite = true;
+    if (!invulnerabilite){
+        vie -= 1;
+        invulnerabilite = true;
         
-        if(this.vie > 0){
-            clignotement = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){this.player.visible = !this.player.visible;}, callbackScope: this});
+        if(vie > 0){
+            this.clignotement = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){this.player.visible = !this.player.visible;}, callbackScope: this});
         }
         
-        //tempsInvulnerabilite = this.time.addEvent({ delay : 2000, callback: function(){this.invulnerabilite = false}, callbackScope: this});
+        this.tempsInvulnerabilite = this.time.addEvent({ delay : 2000, callback: function(){invulnerabilite = false}, callbackScope: this});
     }
      
-     if(this.vie == 0){
+     if(vie == 0){
         this.player.setTint(0xff0000);
         this.physics.pause();
         this.gameOver = true;
