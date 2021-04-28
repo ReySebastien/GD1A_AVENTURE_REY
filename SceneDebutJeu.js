@@ -99,6 +99,36 @@ class DebutJeu extends Phaser.Scene{
         this.add.image(960, 540, 'game_over').setScrollFactor(0);
     }
         
+        // AJOUT CONTROLES MANETTE --------------------------------------------------
+    
+    this.input.gamepad.once('connected', function (pad) {
+    this.paddleConnected = true;
+    this.paddle = pad;
+    });
+
+    if (this.paddleConnected == true)
+    {
+        if (this.paddle.A)
+        {
+        this.player.setVelocityY(-500);
+        }
+
+        else if (this.paddle.Y)
+        {
+            this.player.setVelocityX(500);
+        }
+
+        else if (this.paddle.X)
+        {
+            this.player.setVelocityX(500);
+        }
+
+        else if (this.paddle.B)
+        {   
+            this.player.setVelocityX(-500);
+        }
+
+    }
     } // FIN UPDATE
     
     hitBordureGauche(bordure_gauche, player){
