@@ -29,7 +29,7 @@ create(){
     this.physics.add.collider(this.player, bordure_droite2, this.hitBordureDroite2, null, this);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
     //this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
-    this.hp = this.add.image(1800,100, "barre_de_vie_3hp").setScrollFactor(0);
+    this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
 } // FIN CREATE
     
 update(){

@@ -26,7 +26,7 @@ create(){
     var bordure_gauche2 = this.physics.add.image(1,540, 'bordure_gauche2');
     this.physics.add.collider(this.player, bordure_gauche2, this.hitBordureGauche2, null, this);
     this.physics.add.overlap(this.player, this.revolver, this.getPistolet, null, this);
-    this.hp = this.add.image(1800,100, "barre_de_vie_3hp").setScrollFactor(0);
+    this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
 } // FIN CREATE
     
 update(){

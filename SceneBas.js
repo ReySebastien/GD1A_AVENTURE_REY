@@ -24,7 +24,7 @@ create(){
     this.boutonFeu = this.input.keyboard.addKey('space');
     var bordure_haut2 = this.physics.add.image(960,1, 'bordure_haut2');
     this.physics.add.collider(this.player, bordure_haut2, this.hitBordureHaut2, null, this);
-    this.hp = this.add.image(1800,100, "barre_de_vie_3hp").setScrollFactor(0);
+    this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
 } // FIN CREATE
     
 update(){
