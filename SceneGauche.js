@@ -24,23 +24,26 @@ create(){
     this.ennemi = this.physics.add.image(500, 540, 'ennemi_test');
     this.ennemi.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.boutonFeu = this.input.keyboard.addKey('space');
     var bordure_droite2 = this.physics.add.image(1919,540, 'bordure_droite2');
     this.physics.add.collider(this.player, bordure_droite2, this.hitBordureDroite2, null, this);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
+    //this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.hp = this.add.image(1800,100, "barre_de_vie_3hp").setScrollFactor(0);
 } // FIN CREATE
     
 update(){
         
-    if (this.cursors.left.isDown)
+     if (this.cursors.left.isDown)
     {
-        
+        this.player.direction = 'left';
         this.player.setVelocityX(-500);
         
     }
     else if (this.cursors.right.isDown)
     {
         
+        this.player.direction = 'right';
         this.player.setVelocityX(500);
 
     }
@@ -53,7 +56,7 @@ update(){
     
     if(this.cursors.up.isDown)
     {
-            
+        this.player.direction = 'up';    
         this.player.setVelocityY(-500);
     
     }
@@ -62,6 +65,7 @@ update(){
     else if (this.cursors.down.isDown)
     {
         
+        this.player.direction = 'down';
         this.player.setVelocityY(500)
         
     }
@@ -119,5 +123,11 @@ update(){
         this.gameOver = true;
     }
  }
+    
+    hit (bullet, ennemi) {
+        bullet.destroy();     
+        this.ennemi.destroy();    
+    }
+    
     
 } // FIN DE LA CLASSE

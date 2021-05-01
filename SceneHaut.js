@@ -20,6 +20,7 @@ create(){
     this.player = this.physics.add.image(960, 540, 'perso_test');
     this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.boutonFeu = this.input.keyboard.addKey('space');
     var bordure_bas2 = this.physics.add.image(960,1079, 'bordure_bas2');
     this.physics.add.collider(this.player, bordure_bas2, this.hitBordureBas2, null, this);
     this.hp = this.add.image(1800,100, "barre_de_vie_3hp").setScrollFactor(0);
@@ -27,15 +28,16 @@ create(){
     
 update(){
         
-    if (this.cursors.left.isDown)
+     if (this.cursors.left.isDown)
     {
-        
+        this.player.direction = 'left';
         this.player.setVelocityX(-500);
         
     }
     else if (this.cursors.right.isDown)
     {
         
+        this.player.direction = 'right';
         this.player.setVelocityX(500);
 
     }
@@ -48,7 +50,7 @@ update(){
     
     if(this.cursors.up.isDown)
     {
-            
+        this.player.direction = 'up';    
         this.player.setVelocityY(-500);
     
     }
@@ -57,6 +59,7 @@ update(){
     else if (this.cursors.down.isDown)
     {
         
+        this.player.direction = 'down';
         this.player.setVelocityY(500)
         
     }

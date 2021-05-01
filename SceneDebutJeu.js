@@ -14,6 +14,7 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
         this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
         this.load.image('game_over', 'assets/game_over.png');
+        this.load.image('laser', 'assets/laser.png');
         
     } // FIN PRELOAD
     
@@ -23,6 +24,7 @@ class DebutJeu extends Phaser.Scene{
     this.player = this.physics.add.image(960, 540, 'perso_test');
     this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.boutonFeu = this.input.keyboard.addKey('space');
     var bordure_gauche = this.physics.add.image(1,540, 'bordure_gauche');
     var bordure_haut = this.physics.add.image(960,1, 'bordure_haut');
     var bordure_droite = this.physics.add.image(1919, 540, 'bordure_gauche');
@@ -43,13 +45,14 @@ class DebutJeu extends Phaser.Scene{
         
     if (this.cursors.left.isDown)
     {
-        
+        this.player.direction = 'left';
         this.player.setVelocityX(-500);
         
     }
     else if (this.cursors.right.isDown)
     {
         
+        this.player.direction = 'right';
         this.player.setVelocityX(500);
 
     }
@@ -62,7 +65,7 @@ class DebutJeu extends Phaser.Scene{
     
     if(this.cursors.up.isDown)
     {
-            
+        this.player.direction = 'up';    
         this.player.setVelocityY(-500);
     
     }
@@ -71,6 +74,7 @@ class DebutJeu extends Phaser.Scene{
     else if (this.cursors.down.isDown)
     {
         
+        this.player.direction = 'down';
         this.player.setVelocityY(500)
         
     }
@@ -126,11 +130,18 @@ class DebutJeu extends Phaser.Scene{
         else if (this.paddle.B)
         {   
             this.player.setVelocityX(-500);
-        }
-
+        }  
     }
+        
+        if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)) {
+        if(this.pistolet == true){
+            this.tirer(this.player);
+        }
+    }
+        
     } // FIN UPDATE
     
+
     hitBordureGauche(bordure_gauche, player){
          
         this.scene.start('SceneGauche');

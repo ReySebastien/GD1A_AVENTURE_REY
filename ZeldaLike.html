@@ -39,6 +39,9 @@ var paddleConnected=false;
 var player;
 var ennemi;
 var cursors;
+var boutonFeu;
+var groupeBullets;
+var pistolet = false;
 var invulnerabilite = false;
 var vie = 3;
 var gameOver = false;
@@ -53,7 +56,9 @@ function preload ()
 function create ()
 {
     cursors = this.input.keyboard.createCursorKeys();
+    boutonFeu = this.input.keyboard.addKey('space');
     player.setCollideWorldBounds(true);
+    groupeBullets = this.physics.add.group();
     
     this.scene.start("Menu")
     
@@ -62,11 +67,25 @@ function create ()
 function update ()
 {
  
+    if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)) {
+        if(this.pistolet == true){
+            tirer(this.player);
+        }
+    }
     
 }
 
 // AUTRES FONCTIONS
-    
+function tirer(player) {
+	    var coefDir;
+        if (player.direction == 'left') { coefDir = -1; } else { coefDir = 1 }
+        // on crée la balle a coté du joueur
+        var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'laser');
+        // parametres physiques de la balle.
+        bullet.setCollideWorldBounds(false);
+        bullet.body.allowGravity =false;
+        bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
+    }
 </script>
 
 </body>

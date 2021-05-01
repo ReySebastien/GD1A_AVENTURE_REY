@@ -11,6 +11,7 @@ preload(){
     this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
     this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
     this.load.image('game_over', 'assets/game_over.png');
+    this.load.image('revolver', 'assets/pistolet_laser.png');
     
 } // FIN PRELOAD
     
@@ -19,23 +20,27 @@ create(){
     this.add.image(960,540, 'fond_test_4');
     this.player = this.physics.add.image(960, 540, 'perso_test');
     this.player.setCollideWorldBounds(true);
+    this.revolver = this.physics.add.image(1500, 800, 'revolver');
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.boutonFeu = this.input.keyboard.addKey('space');
     var bordure_gauche2 = this.physics.add.image(1,540, 'bordure_gauche2');
     this.physics.add.collider(this.player, bordure_gauche2, this.hitBordureGauche2, null, this);
+    this.physics.add.overlap(this.player, this.revolver, this.getPistolet, null, this);
     this.hp = this.add.image(1800,100, "barre_de_vie_3hp").setScrollFactor(0);
 } // FIN CREATE
     
 update(){
         
-    if (this.cursors.left.isDown)
+     if (this.cursors.left.isDown)
     {
-        
+        this.player.direction = 'left';
         this.player.setVelocityX(-500);
         
     }
     else if (this.cursors.right.isDown)
     {
         
+        this.player.direction = 'right';
         this.player.setVelocityX(500);
 
     }
@@ -48,7 +53,7 @@ update(){
     
     if(this.cursors.up.isDown)
     {
-            
+        this.player.direction = 'up';    
         this.player.setVelocityY(-500);
     
     }
@@ -57,6 +62,7 @@ update(){
     else if (this.cursors.down.isDown)
     {
         
+        this.player.direction = 'down';
         this.player.setVelocityY(500)
         
     }
@@ -84,7 +90,13 @@ update(){
     else if (vie == 0){
         this.add.image(960, 540, 'game_over').setScrollFactor(0);
     }
-        
+    
+        if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)) {
+        if(this.pistolet == true){
+            tirer(this.player);
+        }
+    }
+    
     } // FIN UPDATE
     
     hitBordureGauche2(bordure_gauche2, player){
@@ -95,4 +107,9 @@ update(){
 
      }
     
+    getPistolet(player, revolver){
+        this.revolver.disableBody(true, true);
+        this.pistolet = true;
+    }
+
 } // FIN DE LA CLASSE
