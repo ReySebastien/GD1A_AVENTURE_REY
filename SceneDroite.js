@@ -11,7 +11,7 @@ preload(){
     this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
     this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
     this.load.image('game_over', 'assets/game_over.png');
-    this.load.image('revolver', 'assets/pistolet_laser.png');
+    this.load.image('revolver', 'assets/revolver.png');
     this.load.image('ennemi_test', 'assets_test/ennemi_test.png');
 
     
