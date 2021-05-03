@@ -111,5 +111,16 @@ update(){
         this.revolver.disableBody(true, true);
         this.pistolet = true;
     }
+    
+    tirer(player) {
+	    var coefDir;
+        if (player.direction == 'left') { coefDir = -1; } else { coefDir = 1 }
+        // on crée la balle a coté du joueur
+        var bullet = this.groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'laser');
+        // parametres physiques de la balle.
+        bullet.setCollideWorldBounds(false);
+        bullet.body.allowGravity =false;
+        bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
+    }
 
 } // FIN DE LA CLASSE

@@ -40,7 +40,7 @@ var player;
 var ennemi;
 var cursors;
 var boutonFeu;
-var groupeBullets;
+var groupeBullets
 var pistolet = false;
 var invulnerabilite = false;
 var vie = 3;
@@ -76,16 +76,7 @@ function update ()
 }
 
 // AUTRES FONCTIONS
-function tirer(player) {
-	    var coefDir;
-        if (player.direction == 'left') { coefDir = -1; } else { coefDir = 1 }
-        // on crée la balle a coté du joueur
-        var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'laser');
-        // parametres physiques de la balle.
-        bullet.setCollideWorldBounds(false);
-        bullet.body.allowGravity =false;
-        bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
-    }
+
 </script>
 
 </body>
