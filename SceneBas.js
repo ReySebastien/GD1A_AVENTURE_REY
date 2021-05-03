@@ -22,9 +22,15 @@ create(){
     this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.boutonFeu = this.input.keyboard.addKey('space');
+    this.groupeBullets = this.physics.add.group();
     var bordure_haut2 = this.physics.add.image(960,1, 'bordure_haut2');
+    
+    this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);    
     this.physics.add.collider(this.player, bordure_haut2, this.hitBordureHaut2, null, this);
     this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
+    this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
+
+
 } // FIN CREATE
     
 update(){
@@ -88,6 +94,12 @@ update(){
     else if (vie == 0){
         this.add.image(960, 540, 'game_over').setScrollFactor(0);
     }
+    
+    if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)) {
+        if(pistolet == true){
+            this.tirer(this.player);
+        }
+    }
         
     } // FIN UPDATE
     
@@ -97,5 +109,44 @@ update(){
         this.cursors.down.isDown = false;
         this.cursors.up.isDown = false;
      }
+    
+    hitEnnemi(player, ennemi){
+     
+    if (!invulnerabilite){
+        vie -= 1;
+        invulnerabilite = true;
+        
+        if(vie > 0){
+            this.clignotement = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){this.player.visible = !this.player.visible;}, callbackScope: this});
+        }
+        
+        this.tempsInvulnerabilite = this.time.addEvent({ delay : 2000, callback: function(){invulnerabilite = false}, callbackScope: this});
+    }
+     
+     if(vie == 0){
+        this.player.setTint(0xff0000);
+        this.physics.pause();
+        this.gameOver = true;
+    }
+ }
+    
+    hit (bullet, ennemi) {
+        bullet.destroy();     
+        this.ennemi.destroy();    
+    }
+    
+
+    tirer(player) {
+	    var coefDirX;
+        var coefDirY;
+        if (this.player.direction == 'left') { coefDirX = -1; } else if(this.player.direction == 'right') { coefDirX = 1 } else {coefDirX = 0}
+        if (this.player.direction == 'up') {coefDirY = -1;} else if(this.player.direction == 'down') {coefDirY = 1} else {coefDirY =0}
+        // on crée la balle a coté du joueur
+        var bullet = this.groupeBullets.create(this.player.x + (25 * coefDirX), this.player.y - 4 , 'laser');
+        // parametres physiques de la balle.
+        bullet.setCollideWorldBounds(false);
+        bullet.body.allowGravity =false;
+        bullet.setVelocity(1000 * coefDirX, 1000 * coefDirY); // vitesse en x et en y
+    }
     
 }
