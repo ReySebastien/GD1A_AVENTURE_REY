@@ -14,7 +14,7 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
         this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
         this.load.image('game_over', 'assets/game_over.png');
-        this.load.image('laser', 'assets/balle.png');
+        this.load.image('balle', 'assets/balle.png');
         
     } // FIN PRELOAD
     
@@ -178,7 +178,7 @@ class DebutJeu extends Phaser.Scene{
         if (this.player.direction == 'left') { coefDirX = -1; } else if(this.player.direction == 'right') { coefDirX = 1 } else {coefDirX = 0}
         if (this.player.direction == 'up') {coefDirY = -1;} else if(this.player.direction == 'down') {coefDirY = 1} else {coefDirY =0}
         // on crée la balle a coté du joueur
-        var bullet = this.groupeBullets.create(this.player.x + (25 * coefDirX), this.player.y - 4 , 'laser');
+        var bullet = this.groupeBullets.create(this.player.x + (25 * coefDirX), this.player.y - 4 , 'balle');
         // parametres physiques de la balle.
         bullet.setCollideWorldBounds(false);
         bullet.body.allowGravity =false;
