@@ -13,6 +13,7 @@ preload(){
     this.load.image('game_over', 'assets/game_over.png');
     this.load.image('revolver', 'assets/revolver.png');
     this.load.image('ennemi_test', 'assets_test/ennemi_test.png');
+    this.load.image('gold_coin', 'assets/gold_coin.png');
 
     
 } // FIN PRELOAD
@@ -143,7 +144,7 @@ update(){
     
     hit (bullet, ennemi) {
         bullet.destroy();     
-        this.ennemi.destroy();    
+        this.ennemi.destroy();
     }
 
     
