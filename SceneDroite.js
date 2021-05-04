@@ -30,7 +30,8 @@ create(){
     this.ennemi.setCollideWorldBounds(true);
     this.groupeBullets = this.physics.add.group();
     this.goldCoin = this.physics.add.group();
-    
+    this.sceneText = this.add.text(1900, 540, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
+
     if (pistolet == false){
         this.revolver = this.physics.add.image(1500, 800, 'revolver');
 
@@ -219,12 +220,13 @@ update(){
     hit (bullet, ennemi) {
         bullet.destroy();
         this.goldCoin.create(ennemi.x, ennemi.y, 'gold_coin');
-        this.ennemi.destroy();
+        ennemi.destroy();
     }
 
     getGoldCoin(player, goldCoin){
-        this.goldCoin.disableBody(true, true);
-        argent = +1;
+        goldCoin.destroy();
+        argent += 1;
+        this.sceneText.setText(argent);
     }
     
     tirer(player) {

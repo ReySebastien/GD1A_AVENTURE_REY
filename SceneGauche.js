@@ -7,7 +7,6 @@ preload(){
     
     this.load.image('scene_gauche', 'assets/tileset_scene_gauche.png');
     this.load.tilemapTiledJSON('map_gauche', 'MapGauche.json');
-    //this.load.image('fond_test_2', 'assets_test/fond_test_2.png');
     this.load.image('perso_test', 'assets_test/perso_test.png');
     this.load.image('bordure_droite2', 'assets_test/bordure_test.png');
     this.load.image('ennemi_test', 'assets/bison.png');
@@ -15,12 +14,13 @@ preload(){
     this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
     this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
     this.load.image('game_over', 'assets/game_over.png');
+    this.load.image('gold_coin', 'assets/gold_coin.png');
+
     
 } // FIN PRELOAD
     
 create(){
     
-    //this.add.image(960,540, 'fond_test_2');
     this.map = this.make.tilemap({ key: 'map_gauche' });
     this.tileset = this.map.addTilesetImage('platformPack_tilesheet', 'scene_gauche');
     this.sol = this.map.createStaticLayer('Sol', this.tileset, 0, 0);
@@ -30,7 +30,7 @@ create(){
     this.player.direction = 'down';
     this.player.setCollideWorldBounds(true);
     
-    this.ennemi = this.physics.add.image(500, 540, 'ennemi_test');
+    this.ennemi = this.physics.add.image(700, 540, 'ennemi_test');
     this.ennemi.setCollideWorldBounds(true);
     
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -38,14 +38,18 @@ create(){
     this.groupeBullets = this.physics.add.group();
     var bordure_droite2 = this.physics.add.image(1919,540, 'bordure_droite2');
     this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
-    
+    this.sceneText = this.add.text(1900, 540, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
+    this.goldCoin = this.physics.add.group();
+
+
     this.physics.add.collider(this.player, this.objets);
     this.objets.setCollisionByProperty({collides:true});
     
     this.physics.add.collider(this.player, bordure_droite2, this.hitBordureDroite2, null, this);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
-
+    this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
+    
     this.anims.create({
         key: 'left',
         frames: this.anims.generateFrameNumbers('dude', { start: 8, end: 10 }),
@@ -210,8 +214,15 @@ update(){
  }
     
     hit (bullet, ennemi) {
-        bullet.destroy();     
-        this.ennemi.destroy();    
+        bullet.destroy();
+        this.goldCoin.create(ennemi.x, ennemi.y, 'gold_coin');
+        ennemi.destroy();
+    }
+    
+    getGoldCoin(player, goldCoin){
+        goldCoin.destroy();
+        argent += 1;
+        this.sceneText.setText(argent);
     }
 
     tirer(player) {

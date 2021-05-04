@@ -15,6 +15,7 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
         this.load.image('game_over', 'assets/game_over.png');
         this.load.image('balle', 'assets/balle.png');
+        this.load.image('gold_coin', 'assets/gold_coin.png');
         this.load.spritesheet('dude', 'assets/spritesheet_perso.png', { frameWidth: 30, frameHeight: 45});
 
     } // FIN PRELOAD
@@ -30,6 +31,10 @@ class DebutJeu extends Phaser.Scene{
     var bordure_haut = this.physics.add.image(960,1, 'bordure_haut');
     var bordure_droite = this.physics.add.image(1919, 540, 'bordure_gauche');
     var bordure_bas = this.physics.add.image(960, 1079, 'bordure_haut');
+    this.sceneText = this.add.text(1900, 540, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
+    this.goldCoin = this.physics.add.group();
+
+
     
     this.player = this.physics.add.sprite(960, 540, 'dude');
     this.player.direction = 'down';
@@ -42,7 +47,8 @@ class DebutJeu extends Phaser.Scene{
     this.physics.add.collider(this.player, bordure_bas, this.hitBordureBas, null, this);
     this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
-
+    this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
+    this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
     
     this.anims.create({
         key: 'left',
@@ -232,12 +238,17 @@ class DebutJeu extends Phaser.Scene{
     }
  }
     
-    hit (bullet, ennemi){
+    hit (bullet, ennemi) {
         bullet.destroy();
-        
-        this.ennemi.destroy();    
+        this.goldCoin.create(ennemi.x, ennemi.y, 'gold_coin');
+        ennemi.destroy();
     }
 
+    getGoldCoin(player, goldCoin){
+        goldCoin.destroy();
+        argent += 1;
+        this.sceneText.setText(argent);
+    }
     tirer(player) {
 	    var coefDirX;
         var coefDirY;
