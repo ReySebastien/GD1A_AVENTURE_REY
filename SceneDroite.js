@@ -12,7 +12,7 @@ preload(){
     this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
     this.load.image('game_over', 'assets/game_over.png');
     this.load.image('revolver', 'assets/revolver.png');
-    this.load.image('ennemi_test', 'assets_test/ennemi_test.png');
+    this.load.image('ennemi_test', 'assets/bison.png');
     this.load.image('gold_coin', 'assets/gold_coin.png');
 
     
@@ -32,7 +32,7 @@ create(){
     this.groupeBullets = this.physics.add.group();
     
     if (pistolet == false){
-            this.revolver = this.physics.add.image(1500, 800, 'revolver');
+        this.revolver = this.physics.add.image(1500, 800, 'revolver');
 
     }
 
@@ -42,7 +42,18 @@ create(){
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
 
-
+    
+    var tween = this.tweens.add({
+        targets: ennemi,
+        x: 50,
+        duration: 5000,
+        yoyo: true,
+        repeat: -1,
+        onStart: function () { console.log('onStart'); console.log(arguments); },
+        onComplete: function () { console.log('onComplete'); console.log(arguments); },
+        onYoyo: function () { console.log('onYoyo'); console.log(arguments); },
+        onRepeat: function () { console.log('onRepeat'); console.log(arguments); },
+    });
 
 } // FIN CREATE
     
