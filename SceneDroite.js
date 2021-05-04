@@ -31,6 +31,7 @@ create(){
     this.ennemi = this.physics.add.image(500, 540, 'ennemi_test');
     this.ennemi.setCollideWorldBounds(true);
     this.groupeBullets = this.physics.add.group();
+    this.goldCoin = this.physics.add.group();
     
     if (pistolet == false){
         this.revolver = this.physics.add.image(1500, 800, 'revolver');
@@ -42,6 +43,7 @@ create(){
     this.physics.add.overlap(this.player, this.revolver, this.getPistolet, null, this);
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
+    this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
 
     
     /*var tween = this.tweens.add({
@@ -217,10 +219,15 @@ update(){
     }
     
     hit (bullet, ennemi) {
-        bullet.destroy();     
+        bullet.destroy();
+        this.goldCoin.create(ennemi.x, ennemi.y, 'gold_coin');
         this.ennemi.destroy();
     }
 
+    getGoldCoin(player, goldCoin){
+        this.goldCoin.disableBody(true, true);
+        argent = +1;
+    }
     
     tirer(player) {
 	    var coefDirX;

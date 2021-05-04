@@ -232,8 +232,9 @@ class DebutJeu extends Phaser.Scene{
     }
  }
     
-    hit (bullet, ennemi) {
-        bullet.destroy();     
+    hit (bullet, ennemi){
+        bullet.destroy();
+        
         this.ennemi.destroy();    
     }
 
