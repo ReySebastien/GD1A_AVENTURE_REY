@@ -14,8 +14,6 @@ preload(){
     this.load.image('revolver', 'assets/revolver.png');
     this.load.image('ennemi_test', 'assets/bison.png');
     this.load.image('gold_coin', 'assets/gold_coin.png');
-
-    
 } // FIN PRELOAD
     
 create(){
