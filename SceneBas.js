@@ -18,7 +18,8 @@ class SceneBas extends Phaser.Scene{
 create(){
         
     this.add.image(960,540, 'fond_test_5');
-    this.player = this.physics.add.image(960, 540, 'perso_test');
+    this.player = this.physics.add.sprite(960, 540, 'dude');
+    this.player.direction = 'down';
     this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.boutonFeu = this.input.keyboard.addKey('space');
@@ -30,35 +31,89 @@ create(){
     this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
 
+    this.anims.create({
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('dude', { start: 8, end: 10 }),
+        frameRate: 10,
+    });
 
+    this.anims.create({
+        key: 'face',
+        frames: this.anims.generateFrameNumbers('dude', { start: 15, end: 22 }),
+        frameRate: 10,
+    });
+        
+    this.anims.create({
+        key: 'dos',
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 7 }),
+        frameRate: 10,
+    });
+
+    this.anims.create({
+        key: 'right',
+        frames: this.anims.generateFrameNumbers('dude', { start: 12, end: 14 }),
+        frameRate: 10,
+    });
+    
+    this.anims.create({
+        key: 'reste_right',
+        frames: [ {key: 'dude', frame: 12}],
+    });
+    
+    this.anims.create({
+        key: 'reste_left',
+        frames: [{key: 'dude', frame: 10}],
+    });
+        
+    this.anims.create({
+        key: 'reste_face',
+        frames: [{key: 'dude', frame: 15}],
+    }); 
+
+    this.anims.create({
+        key: 'reste_dos',
+        frames: [{key: 'dude', frame: 7}],
+    });
+    
 } // FIN CREATE
     
 update(){
         
-     if (this.cursors.left.isDown)
+    if (this.cursors.left.isDown)
     {
         this.player.direction = 'left';
-        this.player.setVelocityX(-500);
+        this.player.setVelocityX(-300);
+        this.player.anims.play('left', true);
         
     }
     else if (this.cursors.right.isDown)
     {
         
         this.player.direction = 'right';
-        this.player.setVelocityX(500);
+        this.player.setVelocityX(300);
+        this.player.anims.play('right', true);
 
     }
     else
     {
         
-        this.player.setVelocityX(0);  
+        this.player.setVelocityX(0);
         
+        if(this.player.direction == 'left'){
+            this.player.anims.play('reste_left', true);
+        }
+        
+        else if (this.player.direction == 'right'){
+            this.player.anims.play('reste_right', true);
+        }
+  
     }
     
     if(this.cursors.up.isDown)
     {
         this.player.direction = 'up';    
-        this.player.setVelocityY(-500);
+        this.player.setVelocityY(-300);
+        this.player.anims.play('dos', true);
     
     }
     
@@ -67,14 +122,21 @@ update(){
     {
         
         this.player.direction = 'down';
-        this.player.setVelocityY(500)
-        
+        this.player.setVelocityY(300);
+        this.player.anims.play('face', true);
     }
         
     else
     {
         
-        this.player.setVelocityY(0);  
+        this.player.setVelocityY(0);
+        if (this.player.direction == 'up'){
+            this.player.anims.play('reste_dos', true);
+        }
+        
+        else if (this.player.direction == 'down'){
+            this.player.anims.play('reste_face', true);
+        } 
         
     }
     

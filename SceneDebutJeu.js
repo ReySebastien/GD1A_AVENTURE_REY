@@ -15,14 +15,13 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
         this.load.image('game_over', 'assets/game_over.png');
         this.load.image('balle', 'assets/balle.png');
-        
+        this.load.spritesheet('dude', 'assets/spritesheet_perso.png', { frameWidth: 30, frameHeight: 45});
+
     } // FIN PRELOAD
     
     create(){
         
     this.add.image(960,540, 'fond_test');
-    this.player = this.physics.add.image(960, 540, 'perso_test');
-    this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.boutonFeu = this.input.keyboard.addKey('space');
     this.groupeBullets = this.physics.add.group();
@@ -32,6 +31,10 @@ class DebutJeu extends Phaser.Scene{
     var bordure_droite = this.physics.add.image(1919, 540, 'bordure_gauche');
     var bordure_bas = this.physics.add.image(960, 1079, 'bordure_haut');
     
+    this.player = this.physics.add.sprite(960, 540, 'dude');
+    this.player.direction = 'down';
+    this.player.setCollideWorldBounds(true);
+        
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.collider(this.player, bordure_gauche, this.hitBordureGauche, null, this);
     this.physics.add.collider(this.player, bordure_haut, this.hitBordureHaut, null, this);
@@ -40,12 +43,56 @@ class DebutJeu extends Phaser.Scene{
     this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
 
+    
+    this.anims.create({
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('dude', { start: 8, end: 10 }),
+        frameRate: 10,
+    });
+
+    this.anims.create({
+        key: 'face',
+        frames: this.anims.generateFrameNumbers('dude', { start: 15, end: 22 }),
+        frameRate: 10,
+    });
         
+    this.anims.create({
+        key: 'dos',
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 7 }),
+        frameRate: 10,
+    });
+
+    this.anims.create({
+        key: 'right',
+        frames: this.anims.generateFrameNumbers('dude', { start: 12, end: 14 }),
+        frameRate: 10,
+    });
+    
+    this.anims.create({
+        key: 'reste_right',
+        frames: [ {key: 'dude', frame: 12}],
+    });
+    
+    this.anims.create({
+        key: 'reste_left',
+        frames: [{key: 'dude', frame: 10}],
+    });
+        
+    this.anims.create({
+        key: 'reste_face',
+        frames: [{key: 'dude', frame: 15}],
+    }); 
+
+    this.anims.create({
+        key: 'reste_dos',
+        frames: [{key: 'dude', frame: 7}],
+    });
+        
+
     this.cameras.main.setBounds(0, 0, 5760, 3283)
     this.cameras.main.setSize(1920, 1080);
     this.cameras.main.startFollow(this.player);
-
-
+        
     } // FIN CREATE   
      
     update(){
@@ -53,27 +100,38 @@ class DebutJeu extends Phaser.Scene{
     if (this.cursors.left.isDown)
     {
         this.player.direction = 'left';
-        this.player.setVelocityX(-500);
+        this.player.setVelocityX(-300);
+        this.player.anims.play('left', true);
         
     }
     else if (this.cursors.right.isDown)
     {
         
         this.player.direction = 'right';
-        this.player.setVelocityX(500);
+        this.player.setVelocityX(300);
+        this.player.anims.play('right', true);
 
     }
     else
     {
         
-        this.player.setVelocityX(0);  
+        this.player.setVelocityX(0);
         
+        if(this.player.direction == 'left'){
+            this.player.anims.play('reste_left', true);
+        }
+        
+        else if (this.player.direction == 'right'){
+            this.player.anims.play('reste_right', true);
+        }
+  
     }
     
     if(this.cursors.up.isDown)
     {
         this.player.direction = 'up';    
-        this.player.setVelocityY(-500);
+        this.player.setVelocityY(-300);
+        this.player.anims.play('dos', true);
     
     }
     
@@ -82,14 +140,21 @@ class DebutJeu extends Phaser.Scene{
     {
         
         this.player.direction = 'down';
-        this.player.setVelocityY(500)
-        
+        this.player.setVelocityY(300);
+        this.player.anims.play('face', true);
     }
         
     else
     {
         
-        this.player.setVelocityY(0);  
+        this.player.setVelocityY(0);
+        if (this.player.direction == 'up'){
+            this.player.anims.play('reste_dos', true);
+        }
+        
+        else if (this.player.direction == 'down'){
+            this.player.anims.play('reste_face', true);
+        } 
         
     }
         
