@@ -13,7 +13,7 @@ class SceneHaut extends Phaser.Scene{
     this.load.image('game_over', 'assets/game_over.png');
     this.load.image('gold_coin', 'assets/gold_coin.png');
     this.load.image('revolver', 'assets/revolver.png');
-
+    this.load.image('biere', 'assets/biere.png');
 
     
 } // FIN PRELOAD
@@ -35,6 +35,10 @@ create(){
         this.revolver = this.physics.add.image(1500, 800, 'revolver');
     }
     
+    if (biere == false){
+        this.biere1 = this.physics.add.image(200, 200, 'biere');
+    }
+    
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.collider(this.player, bordure_bas2, this.hitBordureBas2, null, this);
     this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
@@ -42,7 +46,7 @@ create(){
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
     this.physics.add.overlap(this.player, this.revolver, this.getPistolet, null, this);
-    
+    this.physics.add.overlap(this.player, this.biere1, this.getBiere, null, this);
 
     
     this.anims.create({
@@ -237,6 +241,12 @@ update(){
     getPistolet(player, revolver){
         this.revolver.disableBody(true, true);
         pistolet = true;
+    }
+
+    getBiere(player, biere1){
+        this.biere1.disableBody(true, true);
+        biere = true;
+        vie += 1
     }
     
 }
