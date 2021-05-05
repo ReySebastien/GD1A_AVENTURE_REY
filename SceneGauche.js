@@ -15,7 +15,6 @@ preload(){
     this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
     this.load.image('game_over', 'assets/game_over.png');
     this.load.image('gold_coin', 'assets/gold_coin.png');
-
     
 } // FIN PRELOAD
     
@@ -26,8 +25,7 @@ create(){
     this.sol = this.map.createStaticLayer('Sol', this.tileset, 0, 0);
     this.objets = this.map.createDynamicLayer('Objets', this.tileset, 0, 0);
     
-    this.player = this.physics.add.sprite(960, 540, 'dude');
-    this.player.direction = 'down';
+    this.player = this.physics.add.sprite(1880, 540, 'dude').setSize(28, 15).setOffset(2, 33);    this.player.direction = 'down';
     this.player.setCollideWorldBounds(true);
     
     this.ennemi = this.physics.add.image(700, 540, 'ennemi_test');
@@ -40,8 +38,7 @@ create(){
     this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
     this.sceneText = this.add.text(1900, 540, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
     this.goldCoin = this.physics.add.group();
-
-
+    
     this.physics.add.collider(this.player, this.objets);
     this.objets.setCollisionByProperty({collides:true});
     
@@ -187,7 +184,7 @@ update(){
     
     hitBordureDroite2(bordure_droite2, player){
          
-        this.scene.start('DebutJeu');
+        this.scene.start('DebutJeu', {x : 40, y : 540});
         this.cursors.right.isDown = false;
         this.cursors.left.isDown = false;
 

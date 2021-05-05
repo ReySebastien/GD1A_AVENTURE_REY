@@ -17,7 +17,7 @@ class Menu extends Phaser.Scene {
         
         this.input.once('pointerdown', function (event) {
 
-            this.scene.start('DebutJeu');
+            this.scene.start('DebutJeu', {x : 960, y : 540});
 
         }, this);
         

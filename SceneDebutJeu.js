@@ -3,11 +3,16 @@ class DebutJeu extends Phaser.Scene{
         super("DebutJeu");
     }
 
-
-    preload(){
+    init(data){
+        this.positionX = data.x
+        this.positionY = data.y 
+    }
     
-        this.load.image('perso_test', 'assets_test/perso_test.png');
-        this.load.image('fond_test', 'assets_test/fond_test.png');
+    preload(){
+        this.load.image('scene_centre', 'assets/tileset_scene_centre.png');
+        this.load.tilemapTiledJSON('map_centre', 'MapCentre.json');
+        //this.load.image('perso_test', 'assets_test/perso_test.png');
+        //this.load.image('fond_test', 'assets_test/fond_test.png');
         this.load.image('bordure_gauche', 'assets_test/bordure_test.png');
         this.load.image('bordure_haut', 'assets_test/bordure_test_2.png');
         this.load.image('barre_de_vie_3hp', 'assets/barre_de_vie_3hp.png');
@@ -17,88 +22,104 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('balle', 'assets/balle.png');
         this.load.image('gold_coin', 'assets/gold_coin.png');
         this.load.spritesheet('dude', 'assets/spritesheet_perso.png', { frameWidth: 30, frameHeight: 45});
+        this.load.image('hache', 'assets/panneau.png');
 
     } // FIN PRELOAD
     
     create(){
         
-    this.add.image(960,540, 'fond_test');
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.boutonFeu = this.input.keyboard.addKey('space');
-    this.groupeBullets = this.physics.add.group();
+        this.map = this.make.tilemap({ key: 'map_centre' });
+        this.tileset = this.map.addTilesetImage('tileset_scene_centre', 'scene_centre');
+        this.sol = this.map.createStaticLayer('Sol', this.tileset, 0, 0);
+        this.objets = this.map.createDynamicLayer('Objets', this.tileset, 0, 0);
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.boutonFeu = this.input.keyboard.addKey('space');
+        this.groupeBullets = this.physics.add.group();
 
-    var bordure_gauche = this.physics.add.image(1,540, 'bordure_gauche');
-    var bordure_haut = this.physics.add.image(960,1, 'bordure_haut');
-    var bordure_droite = this.physics.add.image(1919, 540, 'bordure_gauche');
-    var bordure_bas = this.physics.add.image(960, 1079, 'bordure_haut');
-    this.sceneText = this.add.text(1900, 540, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
-    this.goldCoin = this.physics.add.group();
+        var bordure_gauche = this.physics.add.image(1,540, 'bordure_gauche');
+        var bordure_haut = this.physics.add.image(960,1, 'bordure_haut');
+        var bordure_droite = this.physics.add.image(1919, 540, 'bordure_gauche');
+        var bordure_bas = this.physics.add.image(960, 1079, 'bordure_haut');
+        this.sceneText = this.add.text(1900, 540, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
+        this.goldCoin = this.physics.add.group();
+        
+        if (hache == false){
+            this.hache1 = this.physics.add.image(1050, 80, 'hache');
+        }
+        else{
+            this.map.removeTileAt(29, 1, true, true, 1)
+            this.map.removeTileAt(30, 1, true, true, 1)
+        }
 
 
     
-    this.player = this.physics.add.sprite(960, 540, 'dude');
-    this.player.direction = 'down';
-    this.player.setCollideWorldBounds(true);
+        this.player = this.physics.add.sprite(this.positionX, this.positionY, 'dude').setSize(28, 15).setOffset(2, 33);
+        this.player.direction = 'down';
+        this.player.setCollideWorldBounds(true);
         
-    this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
-    this.physics.add.collider(this.player, bordure_gauche, this.hitBordureGauche, null, this);
-    this.physics.add.collider(this.player, bordure_haut, this.hitBordureHaut, null, this);
-    this.physics.add.collider(this.player, bordure_droite, this.hitBordureDroite, null, this);
-    this.physics.add.collider(this.player, bordure_bas, this.hitBordureBas, null, this);
-    this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
-    this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
-    this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
-    this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
+        this.physics.add.collider(this.player, this.objets);
+        this.objets.setCollisionByProperty({collides:true});
+        
+        this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
+        this.physics.add.collider(this.player, bordure_gauche, this.hitBordureGauche, null, this);
+        this.physics.add.collider(this.player, bordure_haut, this.hitBordureHaut, null, this);
+        this.physics.add.collider(this.player, bordure_droite, this.hitBordureDroite, null, this);
+        this.physics.add.collider(this.player, bordure_bas, this.hitBordureBas, null, this);
+        this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
+        this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
+        this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
+        this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
+        this.physics.add.overlap(this.player, this.hache1, this.getHache, null, this);
     
-    this.anims.create({
-        key: 'left',
-        frames: this.anims.generateFrameNumbers('dude', { start: 8, end: 10 }),
-        frameRate: 10,
-    });
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('dude', { start: 8, end: 10 }),
+            frameRate: 10,
+        });
 
-    this.anims.create({
-        key: 'face',
-        frames: this.anims.generateFrameNumbers('dude', { start: 15, end: 22 }),
-        frameRate: 10,
-    });
+        this.anims.create({
+            key: 'face',
+            frames: this.anims.generateFrameNumbers('dude', { start: 15, end: 22 }),
+            frameRate: 10,
+        });
         
-    this.anims.create({
-        key: 'dos',
-        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 7 }),
-        frameRate: 10,
-    });
+        this.anims.create({
+            key: 'dos',
+            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 7 }),
+            frameRate: 10,
+        });
 
-    this.anims.create({
-        key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 12, end: 14 }),
-        frameRate: 10,
-    });
-    
-    this.anims.create({
-        key: 'reste_right',
-        frames: [ {key: 'dude', frame: 12}],
-    });
-    
-    this.anims.create({
-        key: 'reste_left',
-        frames: [{key: 'dude', frame: 10}],
-    });
-        
-    this.anims.create({
-        key: 'reste_face',
-        frames: [{key: 'dude', frame: 15}],
-    }); 
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('dude', { start: 12, end: 14 }),
+            frameRate: 10,
+        });
 
-    this.anims.create({
-        key: 'reste_dos',
-        frames: [{key: 'dude', frame: 7}],
-    });
-        
+        this.anims.create({
+            key: 'reste_right',
+            frames: [ {key: 'dude', frame: 12}],
+        });
 
-    this.cameras.main.setBounds(0, 0, 5760, 3283)
-    this.cameras.main.setSize(1920, 1080);
-    this.cameras.main.startFollow(this.player);
-        
+        this.anims.create({
+            key: 'reste_left',
+            frames: [{key: 'dude', frame: 10}],
+        });
+
+        this.anims.create({
+            key: 'reste_face',
+            frames: [{key: 'dude', frame: 15}],
+        }); 
+
+        this.anims.create({
+            key: 'reste_dos',
+            frames: [{key: 'dude', frame: 7}],
+        });
+
+
+        this.cameras.main.setBounds(0, 0, 5760, 3283)
+        this.cameras.main.setSize(1920, 1080);
+        this.cameras.main.startFollow(this.player);
+
     } // FIN CREATE   
      
     update(){
@@ -249,6 +270,14 @@ class DebutJeu extends Phaser.Scene{
         argent += 1;
         this.sceneText.setText(argent);
     }
+    
+    getHache(player, hache1){
+        this.hache1.disableBody(true, true);
+        hache = true;
+        this.map.removeTileAt(29, 1, true, true, 1)
+        this.map.removeTileAt(30, 1, true, true, 1)
+    }
+    
     tirer(player) {
 	    var coefDirX;
         var coefDirY;

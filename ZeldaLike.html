@@ -8,8 +8,6 @@
     <script type="text/javascript" src="SceneDebutJeu.js"></script>
     <script type="text/javascript" src="SceneGauche.js"></script>
     <script type="text/javascript" src="SceneHaut.js"></script>
-    <script type="text/javascript" src="SceneDroite.js"></script>
-    <script type="text/javascript" src="SceneBas.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -29,7 +27,7 @@ var config = {
         arcade: {
             gravity: { y: 0 },
             debug: true}},
-    scene: [Menu, DebutJeu, SceneGauche, SceneBas, SceneDroite, SceneHaut],
+    scene: [Menu, DebutJeu, SceneGauche, SceneHaut],
     input:{gamepad:true},
 };
 // VARIABLES
@@ -42,6 +40,7 @@ var cursors;
 var boutonFeu;
 var argent = 0;
 var pistolet = false;
+var hache = false;
 var invulnerabilite = false;
 var vie = 3;
 var gameOver = false;

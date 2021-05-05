@@ -12,6 +12,8 @@ class SceneHaut extends Phaser.Scene{
     this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
     this.load.image('game_over', 'assets/game_over.png');
     this.load.image('gold_coin', 'assets/gold_coin.png');
+    this.load.image('revolver', 'assets/revolver.png');
+
 
     
 } // FIN PRELOAD
@@ -19,7 +21,7 @@ class SceneHaut extends Phaser.Scene{
 create(){
         
     this.add.image(960,540, 'fond_test_3');
-    this.player = this.physics.add.sprite(960, 540, 'dude');
+    this.player = this.physics.add.sprite(960, 1040, 'dude').setSize(28, 15).setOffset(2, 33);    
     this.player.direction = 'down';
     this.player.setCollideWorldBounds(true);
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -29,7 +31,9 @@ create(){
     this.sceneText = this.add.text(1900, 540, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
     this.goldCoin = this.physics.add.group();
 
-
+    if (pistolet == false){
+        this.revolver = this.physics.add.image(1500, 800, 'revolver');
+    }
     
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.collider(this.player, bordure_bas2, this.hitBordureBas2, null, this);
@@ -37,6 +41,9 @@ create(){
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
+    this.physics.add.overlap(this.player, this.revolver, this.getPistolet, null, this);
+    
+
     
     this.anims.create({
         key: 'left',
@@ -177,7 +184,7 @@ update(){
     
     hitBordureBas2(bordure_bas2, player){
          
-        this.scene.start('DebutJeu');
+        this.scene.start('DebutJeu', {x : 960, y : 40});
         this.cursors.down.isDown = false;
         this.cursors.up.isDown = false;
      }
@@ -225,6 +232,11 @@ update(){
         bullet.setCollideWorldBounds(false);
         bullet.body.allowGravity =false;
         bullet.setVelocity(1000 * coefDirX, 1000 * coefDirY); // vitesse en x et en y
+    }
+
+    getPistolet(player, revolver){
+        this.revolver.disableBody(true, true);
+        pistolet = true;
     }
     
 }
