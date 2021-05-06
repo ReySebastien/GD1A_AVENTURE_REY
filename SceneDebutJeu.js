@@ -16,7 +16,7 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('barre_de_vie_3hp', 'assets/barre_de_vie_3hp.png');
         this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
         this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
-        this.load.image('game_over', 'assets/game_over.png');
+        this.load.image('game_over', 'assets/game_overV2.png');
         this.load.image('balle', 'assets/balle.png');
         this.load.image('gold_coin', 'assets/gold_coin.png');
         this.load.spritesheet('dude', 'assets/spritesheet_perso.png', { frameWidth: 30, frameHeight: 45});

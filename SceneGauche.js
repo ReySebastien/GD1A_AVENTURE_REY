@@ -13,10 +13,10 @@ preload(){
     this.load.image('barre_de_vie_3hp', 'assets/barre_de_vie_3hp.png');
     this.load.image('barre_de_vie_2hp', 'assets/barre_de_vie_2hp.png');
     this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
-    this.load.image('game_over', 'assets/game_over.png');
+    this.load.image('game_over', 'assets/game_overV2.png');
     this.load.image('gold_coin', 'assets/gold_coin.png');
-    this.load.image('train', 'assets/thomas_the_train.png');
-    
+    this.load.spritesheet('train', 'assets/thomas_the_train.png', { frameWidth: 309, frameHeight: 240});
+    this.load.image('victoire', 'assets/victoireV3.png');
 } // FIN PRELOAD
     
 create(){
@@ -53,11 +53,6 @@ create(){
     this.physics.add.collider(this.player, this.objets);
     this.objets.setCollisionByProperty({collides:true});
     
-    this.physics.add.collider(this.player, bordure_droite2, this.hitBordureDroite2, null, this);
-    this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
-    this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
-    this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
-    
     this.inventaire = this.add.image(1200, 400, 'inventaire').setScrollFactor(0);
     this.revolver_vide = this.add.image(1200, 300, 'revolver_vide').setScrollFactor(0);
     this.gold_coin_inventaire = this.add.image(1180, 200, 'gold_coin_inventaire').setScrollFactor(0);
@@ -65,8 +60,15 @@ create(){
     this.hache_vide = this.add.image(1200, 450, 'hache_vide').setScrollFactor(0);
     this.biere_vide = this.add.image(1200, 600, 'biere_vide').setScrollFactor(0);
     
-    this.train = this.physics.add.image(300, 620, 'train');
-    
+    this.train = this.physics.add.sprite(300, 620, 'train');
+
+    this.physics.add.collider(this.player, bordure_droite2, this.hitBordureDroite2, null, this);
+    this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
+    this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
+    this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
+    this.physics.add.overlap(this.player, this.train, this.victoire, null, this);
+
+        
     this.cameras.main.setBounds(0, 0, 1920, 1080)
     this.cameras.main.setSize(1280, 720);
     this.cameras.main.startFollow(this.player);
@@ -114,6 +116,11 @@ create(){
         key: 'reste_dos',
         frames: [{key: 'dude', frame: 7}],
     });
+    
+    this.anims.create({
+        key: 'train_apparait',
+        frames: [{ key: 'train', frame: 1.}],
+    })
 
 
 } // FIN CREATE
@@ -220,6 +227,11 @@ update(){
         this.biere_vide.setTexture('biere');
     }
     
+    if(biere == true && hache == true && pistolet == true && argent ==3){
+        
+            this.train.anims.play('train_apparait');
+    }
+    
     } // FIN UPDATE
     
     hitBordureDroite2(bordure_droite2, player){
@@ -275,5 +287,16 @@ update(){
         bullet.setVelocity(1000 * coefDirX, 1000 * coefDirY); // vitesse en x et en y
     }
     
+    victoire(player, train) {
+        if(biere == true && hache == true && pistolet == true && argent ==3){
+        this.physics.pause();
+        victoire = true;
+        this.add.image(640, 360, 'victoire').setScrollFactor(0);
+        
+        this.input.once('pointerdown', function (event) {
+            this.scene.start('Menu', {x : 960, y : 540});
+        }, this);
+        }
+    }
     
 } // FIN DE LA CLASSE

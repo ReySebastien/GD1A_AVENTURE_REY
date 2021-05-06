@@ -13,6 +13,13 @@ class Menu extends Phaser.Scene {
     
     create(){
         
+        vie = 3;
+        biere = false;
+        pistolet = false;
+        hache = false;
+        victoire = false;
+        argent = 0;
+        
         this.add.image(640, 360, 'menu');
         
         this.input.once('pointerdown', function (event) {
