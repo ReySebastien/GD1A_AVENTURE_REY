@@ -28,8 +28,19 @@ create(){
     this.player = this.physics.add.sprite(1880, 540, 'dude').setSize(28, 15).setOffset(2, 33);    this.player.direction = 'down';
     this.player.setCollideWorldBounds(true);
     
-    this.ennemi = this.physics.add.image(700, 540, 'ennemi_test');
-    this.ennemi.setCollideWorldBounds(true);
+    this.ennemi = this.physics.add.image(700, 540, 'ennemi_test').setFlipX(true);
+    var tween = this.tweens.add({
+        targets: this.ennemi,
+        x: 1000,
+        duration: 2500,
+        yoyo: true,
+        repeat: -1,
+        flipX: true,
+        onStart: function () { console.log('onStart'); console.log(arguments); },
+        onComplete: function () { console.log('onComplete'); console.log(arguments); },
+        onYoyo: function () { console.log('onYoyo'); console.log(arguments); },
+        onRepeat: function () { console.log('onRepeat'); console.log(arguments); },
+    });
     
     this.cursors = this.input.keyboard.createCursorKeys();
     this.boutonFeu = this.input.keyboard.addKey('space');

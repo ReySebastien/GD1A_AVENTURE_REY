@@ -41,8 +41,20 @@ create(){
     
     this.physics.add.collider(this.player, this.objets);
     this.objets.setCollisionByProperty({collides:true});
-    this.ennemi = this.physics.add.image(300, 900, 'ennemi_test');
-
+    this.ennemi = this.physics.add.image(300, 900, 'ennemi_test').setFlipX(true);
+    var tween = this.tweens.add({
+        targets: this.ennemi,
+        x: 1000,
+        duration: 2500,
+        yoyo: true,
+        repeat: -1,
+        flipX: true,
+        onStart: function () { console.log('onStart'); console.log(arguments); },
+        onComplete: function () { console.log('onComplete'); console.log(arguments); },
+        onYoyo: function () { console.log('onYoyo'); console.log(arguments); },
+        onRepeat: function () { console.log('onRepeat'); console.log(arguments); },
+    });
+    
     if (pistolet == false){
         this.revolver = this.physics.add.image(1500, 800, 'revolver');
     }

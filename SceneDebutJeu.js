@@ -64,7 +64,18 @@ class DebutJeu extends Phaser.Scene{
         this.objets.setCollisionByProperty({collides:true});
         
         this.ennemi = this.physics.add.image(1600, 900, 'ennemi_test');
-
+        var tween = this.tweens.add({
+        targets: this.ennemi,
+        x: 1000,
+        duration: 2500,
+        yoyo: true,
+        repeat: -1,
+        flipX: true,
+        onStart: function () { console.log('onStart'); console.log(arguments); },
+        onComplete: function () { console.log('onComplete'); console.log(arguments); },
+        onYoyo: function () { console.log('onYoyo'); console.log(arguments); },
+        onRepeat: function () { console.log('onRepeat'); console.log(arguments); },
+    });
         this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
         this.physics.add.collider(this.player, bordure_gauche, this.hitBordureGauche, null, this);
         this.physics.add.collider(this.player, bordure_haut, this.hitBordureHaut, null, this);
