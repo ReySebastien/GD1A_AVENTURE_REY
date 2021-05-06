@@ -11,8 +11,6 @@ class DebutJeu extends Phaser.Scene{
     preload(){
         this.load.image('scene_centre', 'assets/tileset_scene_centre.png');
         this.load.tilemapTiledJSON('map_centre', 'MapCentre.json');
-        //this.load.image('perso_test', 'assets_test/perso_test.png');
-        //this.load.image('fond_test', 'assets_test/fond_test.png');
         this.load.image('bordure_gauche', 'assets_test/bordure_test.png');
         this.load.image('bordure_haut', 'assets_test/bordure_test_2.png');
         this.load.image('barre_de_vie_3hp', 'assets/barre_de_vie_3hp.png');
@@ -22,7 +20,12 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('balle', 'assets/balle.png');
         this.load.image('gold_coin', 'assets/gold_coin.png');
         this.load.spritesheet('dude', 'assets/spritesheet_perso.png', { frameWidth: 30, frameHeight: 45});
-        this.load.image('hache', 'assets/panneau.png');
+        this.load.image('hache', 'assets/hache.png');
+        this.load.image('inventaire', 'assets/inventaire.png');
+        this.load.image('biere_vide', 'assets/biere_vide.png');
+        this.load.image('revolver_vide', 'assets/revolver_vide.png');
+        this.load.image('gold_coin_inventaire', 'assets/gold_coin_inventaire.png');
+        this.load.image('hache_vide', 'assets/hache_vide.png');
 
     } // FIN PRELOAD
     
@@ -38,9 +41,7 @@ class DebutJeu extends Phaser.Scene{
 
         var bordure_gauche = this.physics.add.image(1,540, 'bordure_gauche');
         var bordure_haut = this.physics.add.image(960,1, 'bordure_haut');
-        var bordure_droite = this.physics.add.image(1919, 540, 'bordure_gauche');
-        var bordure_bas = this.physics.add.image(960, 1079, 'bordure_haut');
-        this.sceneText = this.add.text(1900, 540, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
+        
         this.goldCoin = this.physics.add.group();
         
         if (hache == false){
@@ -63,14 +64,26 @@ class DebutJeu extends Phaser.Scene{
         this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
         this.physics.add.collider(this.player, bordure_gauche, this.hitBordureGauche, null, this);
         this.physics.add.collider(this.player, bordure_haut, this.hitBordureHaut, null, this);
-        this.physics.add.collider(this.player, bordure_droite, this.hitBordureDroite, null, this);
-        this.physics.add.collider(this.player, bordure_bas, this.hitBordureBas, null, this);
-        this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
+        this.hp = this.add.image(1100,50, "barre_de_vie_3hp").setScrollFactor(0);
         this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
         this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
         this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
         this.physics.add.overlap(this.player, this.hache1, this.getHache, null, this);
     
+        this.inventaire = this.add.image(1200, 400, 'inventaire').setScrollFactor(0);
+        this.revolver_vide = this.add.image(1200, 300, 'revolver_vide').setScrollFactor(0);
+        this.gold_coin_inventaire = this.add.image(1180, 200, 'gold_coin_inventaire').setScrollFactor(0);
+        this.sceneText = this.add.text(1220, 185, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
+        this.hache_vide = this.add.image(1200, 450, 'hache_vide').setScrollFactor(0);
+        this.biere_vide = this.add.image(1200, 600, 'biere_vide').setScrollFactor(0);
+        
+        this.paddleConnected=false;
+
+        this.input.gamepad.once('connected', function (pad) {
+            this.paddleConnected = true;
+            this.paddle = pad;
+            });
+        
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('dude', { start: 8, end: 10 }),
@@ -116,22 +129,28 @@ class DebutJeu extends Phaser.Scene{
         });
 
 
-        this.cameras.main.setBounds(0, 0, 5760, 3283)
-        this.cameras.main.setSize(1920, 1080);
+        this.cameras.main.setBounds(0, 0, 1920, 1080)
+        this.cameras.main.setSize(1280, 720);
         this.cameras.main.startFollow(this.player);
 
     } // FIN CREATE   
      
     update(){
         
-    if (this.cursors.left.isDown)
+            let pad = Phaser.Input.Gamepad.Gamepad;
+
+        if(this.input.gamepad.total){   //Si une manette est connecté
+            pad = this.input.gamepad.getPad(0);  //pad récupère les inputs du joueur
+        }
+        
+    if (this.cursors.left.isDown || pad.left)
     {
         this.player.direction = 'left';
         this.player.setVelocityX(-300);
         this.player.anims.play('left', true);
         
     }
-    else if (this.cursors.right.isDown)
+    else if (this.cursors.right.isDown || pad.right)
     {
         
         this.player.direction = 'right';
@@ -154,7 +173,7 @@ class DebutJeu extends Phaser.Scene{
   
     }
     
-    if(this.cursors.up.isDown)
+    if(this.cursors.up.isDown || pad.up)
     {
         this.player.direction = 'up';    
         this.player.setVelocityY(-300);
@@ -163,7 +182,7 @@ class DebutJeu extends Phaser.Scene{
     }
     
         
-    else if (this.cursors.down.isDown)
+    else if (this.cursors.down.isDown || pad.down)
     {
         
         this.player.direction = 'down';
@@ -199,15 +218,27 @@ class DebutJeu extends Phaser.Scene{
     }
     
     else if (vie == 0){
-        this.add.image(960, 540, 'game_over').setScrollFactor(0);
+        this.add.image(640, 360, 'game_over').setScrollFactor(0);
     }
         
-    if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)) {
+    if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)|| pad.A) {
         if(pistolet == true){
             this.tirer(this.player);
         }
     }
-         
+        
+    if (hache == true){
+        this.hache_vide.setTexture("hache");
+    }
+    if(pistolet == true){
+        this.revolver_vide.setTexture('revolver');
+    }
+        
+    if(biere == true){
+        this.biere_vide.setTexture('biere');
+    }
+        
+        
     } // FIN UPDATE
     
 
@@ -224,20 +255,6 @@ class DebutJeu extends Phaser.Scene{
         this.cursors.up.isDown = false;
         this.cursors.down.isDown = false;
      }
-    
-    hitBordureDroite(bordure_droite, player){
-        
-        this.scene.start('SceneDroite');
-        this.cursors.right.isDown = false;
-        this.cursors.left.isDown = false;
-    }
-    
-    hitBordureBas(bordure_bas, player){
-        
-        this.scene.start('SceneBas');
-        this.cursors.up.isDown = false;
-        this.cursors.down.isDown = false;
-    }
     
     hitEnnemi(player, ennemi){
      

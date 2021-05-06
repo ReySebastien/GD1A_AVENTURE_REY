@@ -4,7 +4,9 @@ class SceneHaut extends Phaser.Scene{
     }
     preload(){
     
-    this.load.image('fond_test_3', 'assets_test/fond_test_3.png');
+
+    this.load.image('scene_haut', 'assets/tileset_scene_haut.png');
+    this.load.tilemapTiledJSON('map_haut', 'MapHaut.json');
     this.load.image('perso_test', 'assets_test/perso_test.png');
     this.load.image('bordure_bas2', 'assets_test/bordure_test_2.png');
     this.load.image('barre_de_vie_3hp', 'assets/barre_de_vie_3hp.png');
@@ -20,17 +22,25 @@ class SceneHaut extends Phaser.Scene{
     
 create(){
         
-    this.add.image(960,540, 'fond_test_3');
+    
+    this.map = this.make.tilemap({ key: 'map_haut' });
+    this.tileset = this.map.addTilesetImage('tileset_scene_haut', 'scene_haut');
+    this.sol = this.map.createStaticLayer('Sol', this.tileset, 0, 0);
+    this.objets = this.map.createDynamicLayer('Objets', this.tileset, 0, 0);
+
     this.player = this.physics.add.sprite(960, 1040, 'dude').setSize(28, 15).setOffset(2, 33);    
     this.player.direction = 'down';
     this.player.setCollideWorldBounds(true);
+    
     this.cursors = this.input.keyboard.createCursorKeys();
     this.boutonFeu = this.input.keyboard.addKey('space');
     this.groupeBullets = this.physics.add.group();
     var bordure_bas2 = this.physics.add.image(960,1079, 'bordure_bas2');
-    this.sceneText = this.add.text(1900, 540, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
     this.goldCoin = this.physics.add.group();
-
+    
+    this.physics.add.collider(this.player, this.objets);
+    this.objets.setCollisionByProperty({collides:true});
+    
     if (pistolet == false){
         this.revolver = this.physics.add.image(1500, 800, 'revolver');
     }
@@ -41,13 +51,23 @@ create(){
     
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.collider(this.player, bordure_bas2, this.hitBordureBas2, null, this);
-    this.hp = this.add.image(1600,100, "barre_de_vie_3hp").setScrollFactor(0);
+    this.hp = this.add.image(1100,50, "barre_de_vie_3hp").setScrollFactor(0);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
     this.physics.add.overlap(this.player, this.revolver, this.getPistolet, null, this);
     this.physics.add.overlap(this.player, this.biere1, this.getBiere, null, this);
-
+    
+    this.inventaire = this.add.image(1200, 400, 'inventaire').setScrollFactor(0);
+    this.revolver_vide = this.add.image(1200, 300, 'revolver_vide').setScrollFactor(0);
+    this.gold_coin_inventaire = this.add.image(1180, 200, 'gold_coin_inventaire').setScrollFactor(0);
+    this.sceneText = this.add.text(1220, 185, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
+    this.hache_vide = this.add.image(1200, 450, 'hache_vide').setScrollFactor(0);
+    this.biere_vide = this.add.image(1200, 600, 'biere_vide').setScrollFactor(0);
+    
+    this.cameras.main.setBounds(0, 0, 1920, 1080)
+    this.cameras.main.setSize(1280, 720);
+    this.cameras.main.startFollow(this.player);
     
     this.anims.create({
         key: 'left',
@@ -98,15 +118,21 @@ create(){
 } // FIN CREATE
     
 update(){
+    
+    let pad = Phaser.Input.Gamepad.Gamepad;
+
+    if(this.input.gamepad.total){   //Si une manette est connecté
+            pad = this.input.gamepad.getPad(0);  //pad récupère les inputs du joueur
+    }
         
-    if (this.cursors.left.isDown)
+    if (this.cursors.left.isDown || pad.left)
     {
         this.player.direction = 'left';
         this.player.setVelocityX(-300);
         this.player.anims.play('left', true);
         
     }
-    else if (this.cursors.right.isDown)
+    else if (this.cursors.right.isDown || pad.right)
     {
         
         this.player.direction = 'right';
@@ -129,7 +155,7 @@ update(){
   
     }
     
-    if(this.cursors.up.isDown)
+    if(this.cursors.up.isDown || pad.up)
     {
         this.player.direction = 'up';    
         this.player.setVelocityY(-300);
@@ -138,7 +164,7 @@ update(){
     }
     
         
-    else if (this.cursors.down.isDown)
+    else if (this.cursors.down.isDown || pad.down)
     {
         
         this.player.direction = 'down';
@@ -174,15 +200,25 @@ update(){
     }
     
     else if (vie == 0){
-        this.add.image(960, 540, 'game_over').setScrollFactor(0);
+        this.add.image(640, 360, 'game_over').setScrollFactor(0);
     }
     
-    if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)) {
+    if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)|| pad.A) {
         if(pistolet == true){
             this.tirer(this.player);
         }
     }    
-     
+
+    if (hache == true){
+        this.hache_vide.setTexture("hache");
+    }
+    if(pistolet == true){
+        this.revolver_vide.setTexture('revolver');
+    }
+        
+    if(biere == true){
+        this.biere_vide.setTexture('biere');
+    }
     
     } // FIN UPDATE
     
@@ -247,6 +283,9 @@ update(){
         this.biere1.disableBody(true, true);
         biere = true;
         vie += 1
+        if(vie >= 4){
+            vie == 3;
+        }
     }
     
 }

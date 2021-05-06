@@ -13,7 +13,7 @@ class Menu extends Phaser.Scene {
     
     create(){
         
-        this.add.image(960, 540, 'menu');
+        this.add.image(640, 360, 'menu');
         
         this.input.once('pointerdown', function (event) {
 
