@@ -16,6 +16,7 @@ class SceneHaut extends Phaser.Scene{
     this.load.image('gold_coin', 'assets/gold_coin.png');
     this.load.image('revolver', 'assets/revolver.png');
     this.load.image('biere', 'assets/biere.png');
+    this.load.image('ennemi_test', 'assets/bison.png');
 
     
 } // FIN PRELOAD
@@ -40,7 +41,8 @@ create(){
     
     this.physics.add.collider(this.player, this.objets);
     this.objets.setCollisionByProperty({collides:true});
-    
+    this.ennemi = this.physics.add.image(300, 900, 'ennemi_test');
+
     if (pistolet == false){
         this.revolver = this.physics.add.image(1500, 800, 'revolver');
     }

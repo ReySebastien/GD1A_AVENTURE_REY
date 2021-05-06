@@ -26,6 +26,8 @@ class DebutJeu extends Phaser.Scene{
         this.load.image('revolver_vide', 'assets/revolver_vide.png');
         this.load.image('gold_coin_inventaire', 'assets/gold_coin_inventaire.png');
         this.load.image('hache_vide', 'assets/hache_vide.png');
+        this.load.image('ennemi_test', 'assets/bison.png');
+
 
     } // FIN PRELOAD
     
@@ -61,6 +63,8 @@ class DebutJeu extends Phaser.Scene{
         this.physics.add.collider(this.player, this.objets);
         this.objets.setCollisionByProperty({collides:true});
         
+        this.ennemi = this.physics.add.image(1600, 900, 'ennemi_test');
+
         this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
         this.physics.add.collider(this.player, bordure_gauche, this.hitBordureGauche, null, this);
         this.physics.add.collider(this.player, bordure_haut, this.hitBordureHaut, null, this);
@@ -69,7 +73,8 @@ class DebutJeu extends Phaser.Scene{
         this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
         this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
         this.physics.add.overlap(this.player, this.hache1, this.getHache, null, this);
-    
+        this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
+
         this.inventaire = this.add.image(1200, 400, 'inventaire').setScrollFactor(0);
         this.revolver_vide = this.add.image(1200, 300, 'revolver_vide').setScrollFactor(0);
         this.gold_coin_inventaire = this.add.image(1180, 200, 'gold_coin_inventaire').setScrollFactor(0);
@@ -307,5 +312,25 @@ class DebutJeu extends Phaser.Scene{
         bullet.body.allowGravity =false;
         bullet.setVelocity(1000 * coefDirX, 1000 * coefDirY); // vitesse en x et en y
     }
+    
+    hitEnnemi(player, ennemi){
+     
+    if (!invulnerabilite){
+        vie -= 1;
+        invulnerabilite = true;
+        
+        if(vie > 0){
+            this.clignotement = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){this.player.visible = !this.player.visible;}, callbackScope: this});
+        }
+        
+        this.tempsInvulnerabilite = this.time.addEvent({ delay : 2000, callback: function(){invulnerabilite = false}, callbackScope: this});
+    }
+     
+     if(vie == 0){
+        this.player.setTint(0xff0000);
+        this.physics.pause();
+        this.gameOver = true;
+    }
+ }
     
     } // FIN DE LA CLASSE
