@@ -15,6 +15,7 @@ preload(){
     this.load.image('barre_de_vie_1hp', 'assets/barre_de_vie_1hp.png');
     this.load.image('game_over', 'assets/game_over.png');
     this.load.image('gold_coin', 'assets/gold_coin.png');
+    this.load.image('train', 'assets/thomas_the_train.png');
     
 } // FIN PRELOAD
     
@@ -63,6 +64,8 @@ create(){
     this.sceneText = this.add.text(1220, 185, argent, { fontSize: '32px', fill: '#fff' }).setScrollFactor(0);
     this.hache_vide = this.add.image(1200, 450, 'hache_vide').setScrollFactor(0);
     this.biere_vide = this.add.image(1200, 600, 'biere_vide').setScrollFactor(0);
+    
+    this.train = this.physics.add.image(300, 620, 'train');
     
     this.cameras.main.setBounds(0, 0, 1920, 1080)
     this.cameras.main.setSize(1280, 720);
