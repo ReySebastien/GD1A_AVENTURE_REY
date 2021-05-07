@@ -2,7 +2,9 @@ class SceneGauche extends Phaser.Scene{
     constructor(){
         super("SceneGauche");
     }
-    
+        
+    // FONCTION DE CHARGEMENT D'ASSETS --------------------------------------------------
+
 preload(){
     
     this.load.image('scene_gauche', 'assets/tileset_scene_gauche.png');
@@ -19,15 +21,22 @@ preload(){
     this.load.image('victoire', 'assets/victoireV3.png');
 } // FIN PRELOAD
     
+    // FONCTION DE CREATION D'OBJETS --------------------------------------------------
+
 create(){
+    // CREATION DE LA MAP
     
     this.map = this.make.tilemap({ key: 'map_gauche' });
     this.tileset = this.map.addTilesetImage('platformPack_tilesheet', 'scene_gauche');
     this.sol = this.map.createStaticLayer('Sol', this.tileset, 0, 0);
     this.objets = this.map.createDynamicLayer('Objets', this.tileset, 0, 0);
     
+    // CREATION DU JOUEUR 
+    
     this.player = this.physics.add.sprite(1880, 540, 'dude').setSize(28, 15).setOffset(2, 33);    this.player.direction = 'down';
     this.player.setCollideWorldBounds(true);
+    
+    // CREATION D'UN ENNEMI ET DE SON ANIMATION
     
     this.ennemi = this.physics.add.image(700, 540, 'ennemi_test').setFlipX(true);
     var tween = this.tweens.add({
@@ -43,15 +52,24 @@ create(){
         onRepeat: function () { console.log('onRepeat'); console.log(arguments); },
     });
     
+    // AJOUT VARIABLES CONTROLLES
+    
     this.cursors = this.input.keyboard.createCursorKeys();
     this.boutonFeu = this.input.keyboard.addKey('space');
+    
+    // AJOUT DIVERS VARIABLES 
+    
     this.groupeBullets = this.physics.add.group();
     var bordure_droite2 = this.physics.add.image(1919,540, 'bordure_droite2');
     this.hp = this.add.image(1100,50, "barre_de_vie_3hp").setScrollFactor(0);
     this.goldCoin = this.physics.add.group();
     
+    // CREATION DU COLLIDER ENTRE LE JOUEUR ET LES OBJETS DE LA MAP
+    
     this.physics.add.collider(this.player, this.objets);
     this.objets.setCollisionByProperty({collides:true});
+    
+    // CREATION DE L'INVENTAIRE VISIBLE A L'ECRAN 
     
     this.inventaire = this.add.image(1200, 400, 'inventaire').setScrollFactor(0);
     this.revolver_vide = this.add.image(1200, 300, 'revolver_vide').setScrollFactor(0);
@@ -60,18 +78,24 @@ create(){
     this.hache_vide = this.add.image(1200, 450, 'hache_vide').setScrollFactor(0);
     this.biere_vide = this.add.image(1200, 600, 'biere_vide').setScrollFactor(0);
     
+    // AJOUT DU TRAIN
     this.train = this.physics.add.sprite(300, 620, 'train');
 
+    // CREATION DES COLLIDERS
+    
     this.physics.add.collider(this.player, bordure_droite2, this.hitBordureDroite2, null, this);
     this.physics.add.overlap(this.player, this.ennemi, this.hitEnnemi, null, this);
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.overlap(this.player, this.goldCoin, this.getGoldCoin, null, this);
     this.physics.add.overlap(this.player, this.train, this.victoire, null, this);
 
-        
+    // CREATION DE LA CAMERA
+    
     this.cameras.main.setBounds(0, 0, 1920, 1080)
     this.cameras.main.setSize(1280, 720);
     this.cameras.main.startFollow(this.player);
+    
+    // CREATION DES ANIMATIONS DU JOUEUR 
     
     this.anims.create({
         key: 'left',
@@ -124,8 +148,12 @@ create(){
 
 
 } // FIN CREATE
-    
+        
+    // FONCTION UPDATE --------------------------------------------------
+
 update(){
+    
+    // CONTROLES CLAVIER ET MANETTE
     
     let pad = Phaser.Input.Gamepad.Gamepad;
 
@@ -193,6 +221,8 @@ update(){
         
     }
      
+    // ACTUALISATION DE LA VIE AVEC CHANGEMENT DE LA BARRE DE VIE
+    
     if (vie == 3){
        this.hp.setTexture("barre_de_vie_3hp");
         
@@ -210,12 +240,16 @@ update(){
         this.add.image(640, 360, 'game_over').setScrollFactor(0);
     }
     
+    // INITIALISATION DE LA FONCTION DE TIR
+    
     if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)|| pad.A) {
         if(pistolet == true){
             this.tirer(this.player);
         }
     }  
 
+    // ACTUALISATION DE L'INVENTAIRE 
+    
     if (hache == true){
         this.hache_vide.setTexture("hache");
     }
@@ -227,12 +261,16 @@ update(){
         this.biere_vide.setTexture('biere');
     }
     
+    // APPARITION DU TRAIN SELONS LES CONDITIONS DE VICTOIRE 
+    
     if(biere == true && hache == true && pistolet == true && argent ==3){
         
             this.train.anims.play('train_apparait');
     }
     
     } // FIN UPDATE
+    
+    // AUTRES FONCTIONS 
     
     hitBordureDroite2(bordure_droite2, player){
          

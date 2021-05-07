@@ -4,13 +4,16 @@ class Menu extends Phaser.Scene {
         super("Menu");
     }
 
+    // FONCTION DE CHARGEMENT D'ASSETS --------------------------------------------------
 
     preload()
     {
         this.load.image('menu', 'assets/menu.png');
         
     } // FIN PRELOAD
-    
+        
+    // FONCTION DE CREATION D'OBJETS --------------------------------------------------
+
     create(){
         
         vie = 3;

@@ -2,6 +2,9 @@ class SceneHaut extends Phaser.Scene{
     constructor(){
         super("SceneHaut");
     }
+    
+        // FONCTION DE CHARGEMENT D'ASSETS --------------------------------------------------
+
     preload(){
     
 
@@ -20,27 +23,43 @@ class SceneHaut extends Phaser.Scene{
 
     
 } // FIN PRELOAD
-    
+   
+        // FONCTION DE CREATION D'OBJETS --------------------------------------------------
+
 create(){
         
+    
+    // CREATION DE LA MAP
     
     this.map = this.make.tilemap({ key: 'map_haut' });
     this.tileset = this.map.addTilesetImage('tileset_scene_haut', 'scene_haut');
     this.sol = this.map.createStaticLayer('Sol', this.tileset, 0, 0);
     this.objets = this.map.createDynamicLayer('Objets', this.tileset, 0, 0);
 
+    // CREATION DU JOUEUR 
+    
     this.player = this.physics.add.sprite(960, 1040, 'dude').setSize(28, 15).setOffset(2, 33);    
     this.player.direction = 'down';
     this.player.setCollideWorldBounds(true);
     
+    // CREATION VARIABLE DE CONTROLES
+    
     this.cursors = this.input.keyboard.createCursorKeys();
     this.boutonFeu = this.input.keyboard.addKey('space');
+    
+    // CREATION AUTRES VARIABLES
+    
     this.groupeBullets = this.physics.add.group();
     var bordure_bas2 = this.physics.add.image(960,1079, 'bordure_bas2');
     this.goldCoin = this.physics.add.group();
     
+    // AJOUT COLLIDER ENTRE LE JOUEUR ET LES OBJETS DE LA MAP
+    
     this.physics.add.collider(this.player, this.objets);
     this.objets.setCollisionByProperty({collides:true});
+    
+    // CREATION D'UN ENNEMI ET DE SON ANIMATION
+    
     this.ennemi = this.physics.add.image(300, 900, 'ennemi_test').setFlipX(true);
     var tween = this.tweens.add({
         targets: this.ennemi,
@@ -55,6 +74,8 @@ create(){
         onRepeat: function () { console.log('onRepeat'); console.log(arguments); },
     });
     
+    // CREATION DES POWERS UP PISTOLET ET HACHE 
+    
     if (pistolet == false){
         this.revolver = this.physics.add.image(1500, 800, 'revolver');
     }
@@ -62,6 +83,8 @@ create(){
     if (biere == false){
         this.biere1 = this.physics.add.image(200, 200, 'biere');
     }
+    
+    // CREATION DES COLLIDERS 
     
     this.physics.add.overlap(this.groupeBullets, this.ennemi, this.hit, null,this);
     this.physics.add.collider(this.player, bordure_bas2, this.hitBordureBas2, null, this);
@@ -79,9 +102,13 @@ create(){
     this.hache_vide = this.add.image(1200, 450, 'hache_vide').setScrollFactor(0);
     this.biere_vide = this.add.image(1200, 600, 'biere_vide').setScrollFactor(0);
     
+    // CREATION DE LA CAMERA
+    
     this.cameras.main.setBounds(0, 0, 1920, 1080)
     this.cameras.main.setSize(1280, 720);
     this.cameras.main.startFollow(this.player);
+    
+    // CREATION DES ANIMATIONS DU JOUEUR
     
     this.anims.create({
         key: 'left',
@@ -131,7 +158,11 @@ create(){
 
 } // FIN CREATE
     
+        // FONCTION UPDATE --------------------------------------------------
+
 update(){
+    
+    // CONTROLES CLAVIER ET MANETTE
     
     let pad = Phaser.Input.Gamepad.Gamepad;
 
@@ -200,6 +231,8 @@ update(){
         
     }
     
+    // ACTUALISATION DE LA VIE AVEC CHANGEMENT DE LA BARRE DE VIE
+    
     if (vie == 3){
        this.hp.setTexture("barre_de_vie_3hp");
         
@@ -217,11 +250,15 @@ update(){
         this.add.image(640, 360, 'game_over').setScrollFactor(0);
     }
     
+        // INITIALISATION DE LA FONCTION DE TIR
+
     if (Phaser.Input.Keyboard.JustDown(this.boutonFeu)|| pad.A) {
         if(pistolet == true){
             this.tirer(this.player);
         }
-    }    
+    }
+    
+    // ACTUALISATION DE L'INVENTAIRE 
 
     if (hache == true){
         this.hache_vide.setTexture("hache");
@@ -236,6 +273,8 @@ update(){
     
     } // FIN UPDATE
     
+       // AUTRES FONCTIONS 
+ 
     hitBordureBas2(bordure_bas2, player){
          
         this.scene.start('DebutJeu', {x : 960, y : 40});

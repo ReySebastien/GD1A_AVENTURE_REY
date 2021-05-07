@@ -26,11 +26,11 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true}},
+            debug: false}},
     scene: [Menu, DebutJeu, SceneGauche, SceneHaut],
     input:{gamepad:true},
 };
-// VARIABLES
+   // VARIABLES -------------------------------------------------- 
     
 var player;
 var ennemi;
@@ -49,7 +49,6 @@ var game = new Phaser.Game(config);
     
 function preload ()
 {
-    this.load.image('perso_test', 'assets_test/perso_test.png');
 }
     
 function create ()
