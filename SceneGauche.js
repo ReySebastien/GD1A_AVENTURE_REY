@@ -263,7 +263,7 @@ update(){
     
     // APPARITION DU TRAIN SELONS LES CONDITIONS DE VICTOIRE 
     
-    if(biere == true && hache == true && pistolet == true && argent ==3){
+    if(biere == true && hache == true && pistolet == true && argent >=3){
         
             this.train.anims.play('train_apparait');
     }
@@ -326,7 +326,7 @@ update(){
     }
     
     victoire(player, train) {
-        if(biere == true && hache == true && pistolet == true && argent ==3){
+        if(biere == true && hache == true && pistolet == true && argent >=3){
         this.physics.pause();
         victoire = true;
         this.add.image(640, 360, 'victoire').setScrollFactor(0);
